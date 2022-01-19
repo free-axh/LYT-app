@@ -21,7 +21,9 @@ export default defineConfig({
     {
       name: '社区邻里',
       icon: 'smile',
-      children: [
+      path: '/neighborhoods',
+      component: '@/pages/neighborhoods/index',
+      routes: [
         {
           path: '/neighborhoods/thing',
           component: '@/pages/neighborhoods/thing/index',

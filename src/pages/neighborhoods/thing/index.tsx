@@ -1,20 +1,159 @@
 import { memo } from 'react';
-import Tabs from '@/components/tabs';
+import Table from '@/components/table';
 import styles from './index.less';
 
 const Thing = memo(() => {
-  const basicData = {
-    title: '好物共享',
-    tabs: [
-      { title: '好物列表', code: 'thing' },
-      { title: '申请列表', code: 'apply' },
-      { title: '分类管理', code: 'management' },
-    ],
-  };
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: 'Tags',
+      key: 'tags',
+      dataIndex: 'tags',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+    },
+  ];
 
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      tags: ['nice', 'developer'],
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+      tags: ['loser'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+      tags: ['cool', 'teacher'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+      tags: ['cool', 'teacher'],
+    },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+    // {
+    // 	key: '3',
+    // 	name: 'Joe Black',
+    // 	age: 32,
+    // 	address: 'Sidney No. 1 Lake Park',
+    // 	tags: ['cool', 'teacher'],
+    // },
+  ];
   return (
-    <div className={styles.main}>
-      <Tabs title={basicData.title} tabs={basicData.tabs} />
+    <div className={styles.content}>
+      <Table columns={columns} dataSource={data} />
     </div>
   );
 });
