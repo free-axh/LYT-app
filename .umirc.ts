@@ -41,6 +41,50 @@ export default defineConfig({
         },
       ],
     },
+    {
+      name: '物业服务',
+      icon: 'smile',
+      path: '/propertyService',
+      component: '@/pages/propertyService/index',
+      routes: [
+        {
+          path: '/propertyService/receive',
+          component: '@/pages/propertyService/receive/index',
+          name: '领用工单',
+        },
+      ],
+    },
+    {
+      name: '垃圾分类',
+      icon: 'smile',
+      path: '/garbageSorting',
+      component: '@/pages/garbageSorting/index',
+      routes: [
+        {
+          path: '/garbageSorting/receive',
+          component: '@/pages/garbageSorting/record/index',
+          name: '垃圾分类记录',
+        },
+      ],
+    },
+    {
+      name: '交通',
+      icon: 'smile',
+      path: '/traffic',
+      component: '@/pages/traffic/index',
+      routes: [
+        {
+          path: '/traffic/information',
+          component: '@/pages/traffic/information/index',
+          name: '违停信息',
+        },
+        {
+          path: '/traffic/register',
+          component: '@/pages/traffic/register/index',
+          name: '违停登记',
+        },
+      ],
+    },
   ],
   fastRefresh: {},
 });
