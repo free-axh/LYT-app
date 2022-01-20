@@ -5,9 +5,11 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 interface IProps {
-  title: String;
+  title: string;
   tabs: ITabs[];
   defaultActiveKey?: string;
+  onChange?: Function;
+  activeKey?: string;
 }
 
 interface ITabs {
@@ -16,8 +18,20 @@ interface ITabs {
 }
 
 const NavTabs: React.FC<IProps> = memo(
-  ({ title, tabs, defaultActiveKey, ...props }) => {
-    const onChange = useCallback((e) => {}, [tabs]);
+  ({
+    title,
+    tabs,
+    defaultActiveKey,
+    activeKey,
+    onChange: onTabsChage,
+    ...props
+  }) => {
+    const onChange = useCallback(
+      (activeKey) => {
+        if (typeof onTabsChage === 'function') onTabsChage(activeKey);
+      },
+      [tabs],
+    );
 
     return (
       <div className={styles.content}>
@@ -25,15 +39,16 @@ const NavTabs: React.FC<IProps> = memo(
           <h2>{title}</h2>
         </div>
         <div className={styles.main}>
-          <div className={styles.tabs}>
-            <Tabs defaultActiveKey={defaultActiveKey} onChange={onChange}>
-              {tabs.map((item) => (
-                <TabPane tab={item.title} key={item.code}>
-                  {props.children}
-                </TabPane>
-              ))}
-            </Tabs>
-          </div>
+          <Tabs
+            defaultActiveKey={defaultActiveKey}
+            activeKey={activeKey}
+            onChange={onChange}
+          >
+            {tabs.map((item) => (
+              <TabPane tab={item.title} key={item.code} />
+            ))}
+          </Tabs>
+          <div className={styles.table}>{props.children}</div>
         </div>
       </div>
     );
