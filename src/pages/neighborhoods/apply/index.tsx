@@ -1,7 +1,15 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import Table from '@/components/table';
+import { getGoodsList } from '@/util/servers';
 
 const Apply = memo(() => {
+  const [pages, setPages] = useState({
+    pageNo: 1,
+    pageSize: 10,
+  });
+
+  const [data, setData] = useState(undefined);
+
   const columns = [
     {
       title: '申请好物',
@@ -35,8 +43,25 @@ const Apply = memo(() => {
     },
   ];
 
-  const data: any[] = [];
-  return <Table columns={columns} dataSource={data} search />;
+  useEffect(() => {
+    getGoodsList(pages).then((res) => {
+      if (res.status === 200) {
+        setData(res.data.data);
+      }
+    });
+  }, [pages]);
+
+  function onQuery(value: string) {
+    setData(undefined);
+    const options = Object.assign({}, pages, { params: { name: value } });
+    getGoodsList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data.data.data);
+      }
+    });
+  }
+
+  return <Table columns={columns} dataSource={data} search onQuery={onQuery} />;
 });
 
 export default Apply;

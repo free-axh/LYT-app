@@ -1,7 +1,12 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import Table from '@/components/table';
+import { receiveList, registerList } from '@/util/servers';
 
 const Register = memo(() => {
+  const [pages, setPages] = useState({
+    pageNo: 1,
+    pageSize: 10,
+  });
   const columns = [
     {
       title: '车牌号',
@@ -34,6 +39,12 @@ const Register = memo(() => {
       align: 'center' as 'center',
     },
   ];
+
+  useEffect(() => {
+    receiveList(pages).then((data) => {
+      console.log('1111111111111', data);
+    });
+  }, [pages]);
 
   const data: any[] = [];
   return <Table columns={columns} dataSource={data} search />;

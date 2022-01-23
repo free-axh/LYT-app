@@ -1,3 +1,4 @@
+import react from 'react';
 import { defineConfig } from 'umi';
 
 export default defineConfig({
@@ -20,7 +21,7 @@ export default defineConfig({
     },
     {
       name: '社区邻里',
-      icon: 'smile',
+      icon: 'team',
       path: '/neighborhoods',
       component: '@/pages/neighborhoods/index',
       routes: [
@@ -43,7 +44,7 @@ export default defineConfig({
     },
     {
       name: '物业服务',
-      icon: 'smile',
+      icon: 'home',
       path: '/propertyService',
       component: '@/pages/propertyService/index',
       routes: [
@@ -56,7 +57,7 @@ export default defineConfig({
     },
     {
       name: '垃圾分类',
-      icon: 'smile',
+      icon: 'interaction',
       path: '/garbageSorting',
       component: '@/pages/garbageSorting/index',
       routes: [
@@ -69,7 +70,7 @@ export default defineConfig({
     },
     {
       name: '交通',
-      icon: 'smile',
+      icon: 'CarOutlined',
       path: '/traffic',
       component: '@/pages/traffic/index',
       routes: [
@@ -87,4 +88,13 @@ export default defineConfig({
     },
   ],
   fastRefresh: {},
+  proxy: {
+    '/api': {
+      target: 'http://113.125.27.99:53993',
+      changeOrigin: true,
+      pathRewrite: {
+        '/api': '',
+      },
+    },
+  },
 });

@@ -1,4 +1,5 @@
 import react, { memo, useState } from 'react';
+import { history } from 'umi';
 import './index.css';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -9,23 +10,22 @@ const Login = memo((props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  // const navigate =  useNavigate();
-  // const onFinish = (values) => {
-  //     const { password, username } = values;
-  //     setLoading(true);
-  //     setError(false);
-  //     if (username === 'admin' && password === '123456') {
-  //         setTimeout(() => {
-  //             navigate('/videoRequest', { replace: true });
-  //             setLoading(false);
-  //         }, 1500);
-  //     } else {
-  //         setTimeout(() => {
-  //             setLoading(false);
-  //             setError(true);
-  //         }, 1000);
-  //     }
-  // };
+  const onFinish = (values: any) => {
+    const { password, username } = values;
+    setLoading(true);
+    setError(false);
+    if (username === 'admin' && password === '123456') {
+      setTimeout(() => {
+        history.replace('/neighborhoods/thing');
+        setLoading(false);
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+        setError(true);
+      }, 1000);
+    }
+  };
 
   return (
     <div className="login">
@@ -33,7 +33,7 @@ const Login = memo((props) => {
         <span className="login-logo">
           <img src={Icon} />
         </span>
-        <span className="login-title">翠光未来社区设备管理平台</span>
+        <span className="login-title">康田智慧服务</span>
       </div>
       <div className="login-main">
         <span
@@ -50,7 +50,7 @@ const Login = memo((props) => {
           name="normal_login"
           className="login-form"
           initialValues={{ remember: true }}
-          // onFinish={onFinish}
+          onFinish={onFinish}
         >
           <Form.Item
             name="username"

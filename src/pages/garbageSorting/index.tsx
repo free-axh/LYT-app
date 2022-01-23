@@ -13,7 +13,23 @@ const GarbageSorting = memo(() => {
 
   return (
     <div className={styles.main}>
-      <Tabs title={basicData.title} tabs={basicData.tabs} activeKey={key}>
+      <Tabs
+        title={basicData.title}
+        tabs={basicData.tabs}
+        activeKey={key}
+        render={
+          <div className={styles.render}>
+            <div className={styles.number}>
+              <span>累计分类次数</span>
+              <span>5464</span>
+            </div>
+            <div className={styles.integral}>
+              <span>累计赠送积分</span>
+              <span>25678</span>
+            </div>
+          </div>
+        }
+      >
         <Record />
       </Tabs>
     </div>
