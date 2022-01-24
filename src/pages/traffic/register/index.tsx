@@ -1,53 +1,89 @@
 import { memo, useEffect, useState } from 'react';
 import Table from '@/components/table';
-import { receiveList, registerList } from '@/util/servers';
+import { registerList } from '@/util/servers';
+import Detail from './detail';
 
 const Register = memo(() => {
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
   });
+  const [data, setData] = useState(undefined);
+  const [total, setTotal] = useState(0);
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [detailData, setDetailData] = useState(undefined);
   const columns = [
     {
       title: '车牌号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'carNumber',
+      key: 'carNumber',
       align: 'center' as 'center',
     },
     {
       title: '登记时间',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'violationTime',
+      key: 'violationTime',
       align: 'center' as 'center',
     },
     {
       title: '登记人',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'userName',
+      key: 'userName',
       align: 'center' as 'center',
     },
     {
       title: '违章描述',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'violationDesc',
+      dataIndex: 'violationDesc',
       align: 'center' as 'center',
     },
     {
       title: '操作',
-      key: 'action',
-      dataIndex: 'action',
+      key: 'handle',
+      dataIndex: 'handle',
       align: 'center' as 'center',
+      render: (text: any, record: any) => {
+        function detailHandle(record: any) {
+          setDetailVisible(true);
+          registerList({
+            pageNo: 1,
+            pageSize: 10,
+            params: { id: record.id },
+          }).then((res) => {
+            if (res.status === 200) {
+              setDetailData(res?.data?.data?.records?.[0]);
+            }
+          });
+        }
+
+        return <a onClick={() => detailHandle(record)}>详情</a>;
+      },
     },
   ];
 
   useEffect(() => {
-    receiveList(pages).then((data) => {
-      console.log('1111111111111', data);
+    registerList(pages).then((res) => {
+      if (res.status === 200) {
+        setData(res?.data?.data?.records);
+        setTotal(res?.data?.data?.total);
+      }
     });
   }, [pages]);
 
-  const data: any[] = [];
-  return <Table columns={columns} dataSource={data} search />;
+  function onDetailClose() {
+    setDetailVisible(false);
+  }
+
+  return (
+    <>
+      <Table columns={columns} dataSource={data} search total={total} />
+      <Detail
+        visible={detailVisible}
+        data={detailData}
+        onDetailClose={onDetailClose}
+      />
+    </>
+  );
 });
 
 export default Register;

@@ -17,6 +17,9 @@ interface IProps {
   search?: boolean;
   onQuery?: Function;
   searchRender?: ReactNode;
+  total?: number;
+  pageSize?: number;
+  onPageChange?: Function;
 }
 
 interface IData {
@@ -29,7 +32,17 @@ interface IData {
 }
 
 const SearchTable: React.FC<IProps> = memo(
-  ({ columns, dataSource, search, onQuery, searchRender, ...props }) => {
+  ({
+    columns,
+    dataSource,
+    search,
+    onQuery,
+    searchRender,
+    total = 0,
+    pageSize = 10,
+    onPageChange,
+    ...props
+  }) => {
     const [height, setHeight] = useState(0);
     const [loading, setLoading] = useState(false);
     const staticRef = useRef({ value: '' });
@@ -61,6 +74,12 @@ const SearchTable: React.FC<IProps> = memo(
       staticRef.current.value = e.target.value;
     }
 
+    function onPaginationChange(page: number, pageSize: number) {
+      if (typeof onPageChange === 'function') {
+        onPageChange(page, pageSize);
+      }
+    }
+
     return (
       <div className={styles.content} id="tableContent">
         {search && (
@@ -86,6 +105,7 @@ const SearchTable: React.FC<IProps> = memo(
           dataSource={dataSource}
           bordered
           scroll={{ y: height }}
+          pagination={{ total, pageSize, onChange: onPaginationChange }}
           {...props}
         />
       </div>

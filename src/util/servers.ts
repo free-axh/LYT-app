@@ -140,7 +140,37 @@ export const goodsApply = (options?: object) =>
 export const receiveList = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/objWarehouse/page',
+    url: '/api/objLend/page',
+    data: options,
+  });
+
+/**
+ * 领用工单 - 详情
+ * @param {*} options
+ * @returns
+ */
+export const receiveDetail = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/api/objLend/list',
+    data: options,
+  });
+
+/**
+ * 领用工单 - 审核
+ * @param {*} options
+ * id
+ * approvalDate
+ * approvalFailExplain:不通过原因
+ * approvalStatus:1通过 0不通过
+ * approvalUser
+ * approvalUserId
+ * @returns
+ */
+export const receiveApproval = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/api/objLend/approval',
     data: options,
   });
 
@@ -165,5 +195,17 @@ export const getGoodsList = (options?: object) =>
   axios({
     method: 'post',
     url: '/api/goodsShare/getGoodsList',
+    data: options,
+  });
+
+/**
+ * 物品信息查询
+ * @param {*} options
+ * @returns
+ */
+export const getGoodsInfo = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/api/objWarehouse/list',
     data: options,
   });

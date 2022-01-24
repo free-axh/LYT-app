@@ -1,7 +1,12 @@
 import { memo, useEffect, useState } from 'react';
-import { Space } from 'antd';
+import { Space, Tag, message } from 'antd';
 import Table from '@/components/table';
-import { registerList } from '@/util/servers';
+import {
+  receiveList,
+  receiveDetail,
+  getGoodsInfo,
+  receiveApproval,
+} from '@/util/servers';
 import Detail from './detail';
 import Modal from './modal';
 
@@ -15,37 +20,45 @@ const Receive = memo(() => {
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState(null);
   const [modal, setModal] = useState(false);
+  const [modalData, setModalData] = useState(undefined);
+  const [total, setTotal] = useState(0);
 
   const columns = [
     {
       title: '物品',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'objName',
+      key: 'objName',
       align: 'center' as 'center',
     },
     {
       title: '领用时间',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'lendDate',
+      key: 'lendDate',
       align: 'center' as 'center',
     },
     {
       title: '领用人姓名',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'lendUser',
+      key: 'lendUser',
       align: 'center' as 'center',
     },
     {
       title: '联系方式',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'lendPhone',
+      dataIndex: 'lendPhone',
       align: 'center' as 'center',
     },
     {
       title: '状态',
-      key: 'action',
-      dataIndex: 'action',
+      key: 'approvalStatus',
+      dataIndex: 'approvalStatus',
       align: 'center' as 'center',
+      render: (text: any) => {
+        if (text !== undefined && text !== null) {
+          return <Tag color={'green'}>已审核</Tag>;
+        }
+        return <Tag color={'orange'}>待审核</Tag>;
+      },
     },
     {
       title: '操作',
@@ -53,18 +66,33 @@ const Receive = memo(() => {
       dataIndex: 'handle',
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function detailHandle(id: number) {
+        async function detailHandle(record: any) {
           setDetailVisible(true);
+          const goodsinfo = await getGoodsInfo({ id: record.objId });
+          console.log('goodsinfo', goodsinfo);
+          const detail = await receiveDetail({ id: record.id, status: '' });
+          if (goodsinfo.status === 200 && detail.status === 200) {
+            const data = Object.assign(
+              {},
+              { picture: goodsinfo?.data?.data },
+              { ...detail?.data?.data[0] },
+            );
+            setDetailData(data);
+          }
         }
 
         function auditHandle(record: any) {
           setModal(true);
+          setModalData(record);
         }
 
         return (
           <Space size="middle">
-            <a onClick={() => detailHandle(record.id)}>详情</a>
-            <a onClick={() => auditHandle(record)}>审核</a>
+            <a onClick={() => detailHandle(record)}>详情</a>
+            {(record.approvalStatus === undefined ||
+              record.approvalStatus === null) && (
+              <a onClick={() => auditHandle(record)}>审核</a>
+            )}
           </Space>
         );
       },
@@ -72,12 +100,12 @@ const Receive = memo(() => {
   ];
 
   useEffect(() => {
-    registerList(pages).then((data) => {
+    receiveList(pages).then((data) => {
       if (data.status === 200) {
-        console.log('ddddd', data);
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data.total);
       }
     });
-    setData([{ name: '111' }]);
   }, [pages]);
 
   function onDetailClose() {
@@ -88,11 +116,59 @@ const Receive = memo(() => {
     setModal(false);
   }
 
-  function onModalSubmit(values: { resultFlag: string; failReason: string }) {}
+  // 审核
+  async function onModalSubmit(values: {
+    approvalStatus: string;
+    approvalFailExplain: string;
+  }) {
+    const options = {
+      id: modalData,
+      approvalDate: 'xxxx',
+      approvalFailExplain: values.approvalFailExplain,
+      approvalStatus: values.approvalStatus,
+      approvalUser: 'xxxxx',
+      approvalUserId: 'xxxxx',
+    };
+    const data = await receiveApproval(options);
+    if (data.status === 200) {
+      message.success('审核完成');
+    } else {
+      message.error('审核失败');
+    }
+  }
+
+  function onPageChange(page: number, pageSize: number) {
+    setPages({
+      pageNo: page,
+      pageSize: pageSize,
+    });
+  }
+
+  // 模糊查询
+  function onQuery(value: string) {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { objName: value, status: '' },
+    });
+    receiveList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data.total);
+      }
+    });
+  }
 
   return (
     <>
-      <Table columns={columns} dataSource={data} search />;
+      <Table
+        columns={columns}
+        dataSource={data}
+        search
+        total={total}
+        onPageChange={onPageChange}
+        onQuery={onQuery}
+      />
+      ;
       <Detail
         visible={detailVisible}
         data={detailData}

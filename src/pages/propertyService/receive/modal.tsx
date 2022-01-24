@@ -39,7 +39,10 @@ const IModal: React.FC<IProps> = memo(
       setValue(e.target.value);
     };
 
-    const onFinish = (values: { resultFlag: string; failReason: string }) => {
+    const onFinish = (values: {
+      approvalStatus: string;
+      approvalFailExplain: string;
+    }) => {
       onSubmit(values);
     };
 
@@ -78,11 +81,11 @@ const IModal: React.FC<IProps> = memo(
       >
         <Form
           form={form}
-          initialValues={{ resultFlag: '1' }}
+          initialValues={{ approvalStatus: '1' }}
           autoComplete="off"
           onFinish={onFinish}
         >
-          <Form.Item name="resultFlag">
+          <Form.Item name="approvalStatus">
             <Radio.Group onChange={onChange} value={value}>
               <Radio value="1">审核通过</Radio>
               <Radio value="0">审核拒绝</Radio>
@@ -90,7 +93,7 @@ const IModal: React.FC<IProps> = memo(
           </Form.Item>
           {value === '0' && (
             <Form.Item
-              name="failReason"
+              name="approvalFailExplain"
               rules={[{ max: 50, type: 'string', message: '最多输入50字' }]}
             >
               <Input.TextArea placeholder="请输入拒绝理由，最多50字" />
