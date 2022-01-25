@@ -49,10 +49,10 @@ export default defineConfig({
       icon: 'home',
       path: '/propertyService',
       component: '@/pages/propertyService/index',
-      headerRender: false,
-      footerRender: false,
-      menuRender: false,
-      menuHeaderRender: true,
+      // headerRender: false,
+      // footerRender: false,
+      // menuRender: false,
+      // menuHeaderRender: true,
       routes: [
         {
           path: '/propertyService/receive',
