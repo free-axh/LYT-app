@@ -9,6 +9,7 @@ import styles from './index.less';
 
 const Neighborhoods = memo(() => {
   const [key, setKey] = useState('thing');
+  const [height, setHeight] = useState<string | number>(0);
 
   const basicData = {
     title: '好物共享',
@@ -63,8 +64,21 @@ const Neighborhoods = memo(() => {
     [key],
   );
 
+  useEffect(() => {
+    const element = document.getElementById('tableContent') as HTMLElement;
+    const resizeObserver = new ResizeObserver((entries) => {
+      const height = element.getBoundingClientRect().top;
+      setHeight(`calc(100vh - ${height}px)`);
+    });
+
+    resizeObserver.observe(element);
+    return () => {
+      resizeObserver.unobserve(element);
+    };
+  }, []);
+
   return (
-    <div className={styles.main}>
+    <div id="tableContent" style={{ height, padding: '33px 17px' }}>
       <Tabs
         title={basicData.title}
         tabs={basicData.tabs}
