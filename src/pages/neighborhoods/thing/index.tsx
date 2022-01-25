@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import { Button, Space, Tag, message, Popconfirm } from 'antd';
 import Table from '@/components/table';
+import { getDate } from '@/util/function';
 import {
   goodsList,
   goodsDetail,
@@ -48,6 +49,9 @@ const Thing = memo(() => {
       dataIndex: 'createTime',
       key: 'createTime',
       align: 'center' as 'center',
+      render: (text: number) => {
+        return getDate(text);
+      },
     },
     {
       title: '状态',

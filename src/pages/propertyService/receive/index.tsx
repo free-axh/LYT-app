@@ -121,19 +121,25 @@ const Receive = memo(() => {
     approvalStatus: string;
     approvalFailExplain: string;
   }) {
-    const options = {
-      id: modalData,
-      approvalDate: 'xxxx',
-      approvalFailExplain: values.approvalFailExplain,
-      approvalStatus: values.approvalStatus,
-      approvalUser: 'xxxxx',
-      approvalUserId: 'xxxxx',
-    };
-    const data = await receiveApproval(options);
-    if (data.status === 200) {
-      message.success('审核完成');
+    const userData: string | null = window.sessionStorage.getItem('userData');
+    const userJson = JSON.parse(userData as string);
+    if (userJson.username && userJson.userId) {
+      const options = {
+        id: modalData,
+        approvalDate: new Date().getTime(),
+        approvalFailExplain: values.approvalFailExplain,
+        approvalStatus: values.approvalStatus,
+        approvalUser: userJson.username,
+        approvalUserId: userJson.userId,
+      };
+      const data = await receiveApproval(options);
+      if (data.status === 200 && data.data.code === 0) {
+        message.success('审核完成');
+      } else {
+        message.error('审核失败');
+      }
     } else {
-      message.error('审核失败');
+      message.warning('无法获取用户信息');
     }
   }
 
