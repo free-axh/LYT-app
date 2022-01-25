@@ -11,7 +11,10 @@ export default defineConfig({
     type: 'none',
   },
   headScripts: [
-    'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js',
+    {
+      src: 'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js',
+      type: 'text/javascript',
+    },
   ],
   routes: [
     // {
@@ -46,10 +49,10 @@ export default defineConfig({
       icon: 'home',
       path: '/propertyService',
       component: '@/pages/propertyService/index',
-      // headerRender: false,
-      // footerRender: false,
-      // menuRender: false,
-      // menuHeaderRender: true,
+      headerRender: false,
+      footerRender: false,
+      menuRender: false,
+      menuHeaderRender: true,
       routes: [
         {
           path: '/propertyService/receive',
