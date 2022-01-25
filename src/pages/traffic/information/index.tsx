@@ -47,10 +47,11 @@ const Information = memo(() => {
       dataIndex: 'key6',
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function detailHandle(id: number) {
+        function detailHandle(record: any) {
           setDetailVisible(true);
+          setDetailData(record);
         }
-        return <a onClick={() => detailHandle(record.id)}>详情</a>;
+        return <a onClick={() => detailHandle(record)}>详情</a>;
       },
     },
   ];
@@ -59,20 +60,31 @@ const Information = memo(() => {
     setTimeout(() => {
       const data: any = [
         {
-          key1: '浙H·D23J1',
+          key1: '浙HD23J1',
           key2: '违章占用人行道',
           key3: '2022-1-8 23:41:34',
-          key4: '张**',
-          key5: '134****6387',
+          key4: '张益达',
+          key5: '13466546387',
           key6: '',
+          picture: null,
         },
         {
-          key1: '浙H·D23J1',
-          key2: '违章占用人行道',
-          key3: '2022-1-8 23:41:34',
-          key4: '张**',
-          key5: '134****6387',
+          key1: '浙K8307C',
+          key2: '违章占用消防通道',
+          key3: '2022-1-18 23:41:34',
+          key4: '蔡文',
+          key5: '17745836521',
           key6: '',
+          picture: null,
+        },
+        {
+          key1: '浙AU7730',
+          key2: '违章占用人行道',
+          key3: '2022-1-20 23:41:34',
+          key4: '陈森',
+          key5: '15102374523',
+          key6: '',
+          picture: null,
         },
       ];
       setData(data);

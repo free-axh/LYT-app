@@ -30,19 +30,33 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
         车辆信息
       </Divider>
       <Descriptions column={1}>
-        <Descriptions.Item label="车牌号">渝A123456</Descriptions.Item>
-        <Descriptions.Item label="车主姓名">张三</Descriptions.Item>
-        <Descriptions.Item label="车主手机号">15100000000</Descriptions.Item>
+        <Descriptions.Item label="车牌号">{data?.key1}</Descriptions.Item>
+        <Descriptions.Item label="车主姓名">{data?.key4}</Descriptions.Item>
+        <Descriptions.Item label="车主手机号">{data?.key5}</Descriptions.Item>
       </Descriptions>
       <Divider dashed orientation="left">
         违章信息
       </Divider>
-      <Descriptions column={1}>
-        <Descriptions.Item label="违章时间">
-          2022-1-6 15:20:39
+      <Descriptions column={2}>
+        <Descriptions.Item label="违章时间" span={2}>
+          {data?.key3}
         </Descriptions.Item>
-        <Descriptions.Item label="违法行为">违章占用人行道</Descriptions.Item>
-        <Descriptions.Item label="违章图片">{undefined}</Descriptions.Item>
+        <Descriptions.Item label="违法行为" span={2}>
+          {data?.key2}
+        </Descriptions.Item>
+        {data?.picture ? (
+          <>
+            {data.picture.map((item: string) => (
+              <Descriptions.Item span={1}>
+                <img width={150} height={150} src={item} />
+              </Descriptions.Item>
+            ))}
+          </>
+        ) : (
+          <Descriptions.Item label="违章图片" span={2}>
+            无图片
+          </Descriptions.Item>
+        )}
       </Descriptions>
     </Drawer>
   );

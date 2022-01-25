@@ -44,7 +44,7 @@ export const goodsDelete = (options: object) =>
 export const goodsList = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goods/getList',
+    url: '/api/goods/page/getList',
     data: options,
   });
 
@@ -116,7 +116,7 @@ export const goodsDeleteType = (options: object) =>
 export const goodsTypeList = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/getGoodsTypeList',
+    url: '/api/goodsShare/page/getGoodsTypeList',
     data: options,
   });
 
@@ -194,7 +194,7 @@ export const registerList = (options?: object) =>
 export const getGoodsList = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/getGoodsList',
+    url: '/api/goodsShare/page/getGoodsList',
     data: options,
   });
 

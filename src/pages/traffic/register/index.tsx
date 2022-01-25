@@ -51,6 +51,7 @@ const Register = memo(() => {
             params: { id: record.id },
           }).then((res) => {
             if (res.status === 200) {
+              console.log('详情', res);
               setDetailData(res?.data?.data?.records?.[0]);
             }
           });
@@ -74,9 +75,37 @@ const Register = memo(() => {
     setDetailVisible(false);
   }
 
+  // 模糊查询
+  function onQuery(value: string) {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { carNumber: value },
+    });
+    registerList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data.total);
+      }
+    });
+  }
+
+  function onPageChange(page: number, pageSize: number) {
+    setPages({
+      pageNo: page,
+      pageSize: pageSize,
+    });
+  }
+
   return (
     <>
-      <Table columns={columns} dataSource={data} search total={total} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        search
+        total={total}
+        onQuery={onQuery}
+        onPageChange={onPageChange}
+      />
       <Detail
         visible={detailVisible}
         data={detailData}

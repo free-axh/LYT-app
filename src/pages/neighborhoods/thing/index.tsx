@@ -7,6 +7,7 @@ import {
   goodsUpdate,
   goodsAuditing,
   goodsDelete,
+  goodsTypeList,
 } from '@/util/servers';
 import Detail from './detail';
 import Modal from './modal';
@@ -21,6 +22,7 @@ const Thing = memo(() => {
     pageNo: 1,
     pageSize: 10,
   });
+  const [total, setTotal] = useState(0);
 
   const columns = [
     {
@@ -37,8 +39,8 @@ const Thing = memo(() => {
     },
     {
       title: '分类',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'typeName',
+      key: 'typeName',
       align: 'center' as 'center',
     },
     {
@@ -130,7 +132,6 @@ const Thing = memo(() => {
         return (
           <Space size="middle">
             <a onClick={() => detailHandle(record.id)}>详情</a>
-            <a>编辑</a>
             <Popconfirm
               title="是否确定删除?"
               onConfirm={() => onDelete(record.id)}
@@ -148,9 +149,9 @@ const Thing = memo(() => {
 
   useEffect(() => {
     goodsList(pages).then((data) => {
-      console.log('data', data);
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
       }
     });
   }, [pages]);
@@ -158,9 +159,9 @@ const Thing = memo(() => {
   function reload() {
     setData(undefined);
     goodsList(pages).then((data) => {
-      console.log('data', data);
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
       }
     });
   }
@@ -187,16 +188,29 @@ const Thing = memo(() => {
     setData(undefined);
     const options = Object.assign({}, pages, { params: { name: value } });
     goodsList(options).then((data) => {
-      console.log('data11111111', data);
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
       }
+    });
+  }
+
+  function onPageChange(page: number, pageSize: number) {
+    setPages({
+      pageNo: page,
+      pageSize: pageSize,
     });
   }
 
   return (
     <>
-      <Table columns={columns} dataSource={data} search onQuery={onQuery} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        search
+        onQuery={onQuery}
+        onPageChange={onPageChange}
+      />
       <Detail
         visible={detailVisible}
         data={detailData}

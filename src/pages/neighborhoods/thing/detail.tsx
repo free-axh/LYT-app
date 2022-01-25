@@ -40,16 +40,42 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
       footer={<Button onClick={() => onDetailClose()}>关闭</Button>}
       footerStyle={{ textAlign: 'center' }}
     >
-      <div className={styles.topMain}>
-        <div className={styles.picture}>
-          <img width={'100%'} height={200} src={data?.picture1} />
-        </div>
-        <div className={styles.text}>
-          <span>好物名称：</span>
-          <br />
-          <span>{data?.name}</span>
-        </div>
-      </div>
+      <Descriptions column={2}>
+        <Descriptions.Item label="好物名称" span={2}>
+          {data?.name}
+        </Descriptions.Item>
+        {data?.picture1 || data?.picture2 || data?.picture3 ? (
+          <>
+            {data?.picture1 && (
+              <Descriptions.Item span={1}>
+                <img width={150} height={150} src={data?.picture1} />
+              </Descriptions.Item>
+            )}
+            {data?.picture2 && (
+              <Descriptions.Item span={1}>
+                <img width={150} height={150} src={data?.picture2} />
+              </Descriptions.Item>
+            )}
+            {data?.picture3 && (
+              <Descriptions.Item span={1}>
+                <img width={150} height={150} src={data?.picture3} />
+              </Descriptions.Item>
+            )}
+          </>
+        ) : (
+          <Descriptions.Item label="图片" span={2}>
+            无图片
+          </Descriptions.Item>
+        )}
+        {data?.picture &&
+          data.picture.map((item: any) => {
+            return (
+              <Descriptions.Item span={1}>
+                <img width={150} height={150} src={item.pic} />
+              </Descriptions.Item>
+            );
+          })}
+      </Descriptions>
       <Divider dashed />
       <Descriptions column={1}>
         <Descriptions.Item label="显示状态">

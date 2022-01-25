@@ -15,6 +15,7 @@ const Management = memo(() => {
     pageNo: 1,
     pageSize: 10,
   });
+  const [total, setTotal] = useState(0);
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState(undefined);
   const [modalTitle, setModalTitle] = useState('');
@@ -42,8 +43,12 @@ const Management = memo(() => {
         function onDelete(id: number) {
           goodsDeleteType({ id }).then((data) => {
             if (data.status === 200) {
-              message.success('删除成功');
-              reload();
+              if (data?.data?.code === 0) {
+                message.success('删除成功');
+                reload();
+              } else {
+                message.warning('该类型已被使用,无法删除');
+              }
             }
           });
         }
@@ -72,7 +77,8 @@ const Management = memo(() => {
   useEffect(() => {
     goodsTypeList(pages).then((data) => {
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.list);
+        setTotal(data?.data?.data?.total);
       }
     });
   }, [pages]);
@@ -114,7 +120,8 @@ const Management = memo(() => {
     setData(undefined);
     goodsTypeList(pages).then((data) => {
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.list);
+        setTotal(data?.data?.data?.total);
       }
     });
   }
@@ -124,8 +131,16 @@ const Management = memo(() => {
     const options = Object.assign({}, pages, { params: { name: value } });
     goodsTypeList(options).then((data) => {
       if (data.status === 200) {
-        setData(data.data.data);
+        setData(data?.data?.data?.list);
+        setTotal(data?.data?.data?.total);
       }
+    });
+  }
+
+  function onPageChange(page: number, pageSize: number) {
+    setPages({
+      pageNo: page,
+      pageSize: pageSize,
     });
   }
 
@@ -141,6 +156,7 @@ const Management = memo(() => {
           </Button>
         }
         onQuery={onQuery}
+        onPageChange={onPageChange}
       />
       ;
       {visible && (

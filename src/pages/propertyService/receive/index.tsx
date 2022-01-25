@@ -23,6 +23,24 @@ const Receive = memo(() => {
   const [modalData, setModalData] = useState(undefined);
   const [total, setTotal] = useState(0);
 
+  useEffect(() => {
+    console.log('window', window);
+    window.formAppUser = (user) => {
+      console.log('user: ', user);
+      console.log('获取到的：', JSON.parse(user));
+      const userJson = JSON.parse(user);
+      localStorage.setItem('user', userJson);
+    };
+    document.addEventListener('UniAppJSBridgeReady', function () {
+      console.log('uni', window);
+      uni.postMessage({
+        data: {
+          action: 'getUser',
+        },
+      });
+    });
+  }, []);
+
   const columns = [
     {
       title: '物品',

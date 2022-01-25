@@ -9,6 +9,7 @@ const Apply = memo(() => {
   });
 
   const [data, setData] = useState(undefined);
+  const [total, setTotal] = useState(0);
 
   const columns = [
     {
@@ -19,26 +20,26 @@ const Apply = memo(() => {
     },
     {
       title: '申请人',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'userName',
+      key: 'userName',
       align: 'center' as 'center',
     },
     {
       title: '联系方式',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'phone',
+      key: 'phone',
       align: 'center' as 'center',
     },
     {
       title: '分类',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'typeName',
+      dataIndex: 'typeName',
       align: 'center' as 'center',
     },
     {
       title: '申请时间',
-      key: 'action',
-      dataIndex: 'action',
+      key: 'startTime',
+      dataIndex: 'startTime',
       align: 'center' as 'center',
     },
   ];
@@ -46,22 +47,39 @@ const Apply = memo(() => {
   useEffect(() => {
     getGoodsList(pages).then((res) => {
       if (res.status === 200) {
-        setData(res.data.data);
+        setData(res?.data?.data?.list);
+        setTotal(res?.data?.data?.total);
       }
     });
   }, [pages]);
 
   function onQuery(value: string) {
     setData(undefined);
-    const options = Object.assign({}, pages, { params: { name: value } });
-    getGoodsList(options).then((data) => {
-      if (data.status === 200) {
-        setData(data.data.data);
+    const options = Object.assign({}, pages, { name: value });
+    getGoodsList(options).then((res) => {
+      if (res.status === 200) {
+        setData(res?.data?.data?.list);
+        setTotal(res?.data?.data?.total);
       }
     });
   }
 
-  return <Table columns={columns} dataSource={data} search onQuery={onQuery} />;
+  function onPageChange(page: number, pageSize: number) {
+    setPages({
+      pageNo: page,
+      pageSize: pageSize,
+    });
+  }
+
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      search
+      onQuery={onQuery}
+      onPageChange={onPageChange}
+    />
+  );
 });
 
 export default Apply;

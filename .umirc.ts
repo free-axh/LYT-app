@@ -10,15 +10,14 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  headScripts: [
+    'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js',
+  ],
   routes: [
-    {
-      path: '/',
-      component: '@/pages/login/index',
-      headerRender: false,
-      footerRender: false,
-      menuRender: false,
-      menuHeaderRender: true,
-    },
+    // {
+    //   path: '/',
+    //   component: '@/pages/login/index',
+    // },
     {
       name: '社区邻里',
       icon: 'team',
@@ -47,10 +46,10 @@ export default defineConfig({
       icon: 'home',
       path: '/propertyService',
       component: '@/pages/propertyService/index',
-      headerRender: false,
-      footerRender: false,
-      menuRender: false,
-      menuHeaderRender: true,
+      // headerRender: false,
+      // footerRender: false,
+      // menuRender: false,
+      // menuHeaderRender: true,
       routes: [
         {
           path: '/propertyService/receive',
@@ -77,10 +76,6 @@ export default defineConfig({
       icon: 'CarOutlined',
       path: '/traffic',
       component: '@/pages/traffic/index',
-      headerRender: false,
-      footerRender: false,
-      menuRender: false,
-      menuHeaderRender: true,
       routes: [
         {
           path: '/traffic/information',
@@ -98,7 +93,8 @@ export default defineConfig({
   fastRefresh: {},
   proxy: {
     '/api': {
-      target: 'http://113.125.27.99:53993',
+      // target: 'http://113.125.27.99:53993',
+      target: 'http://cloud2.5gzvip.91tunnel.com',
       changeOrigin: true,
       pathRewrite: {
         '/api': '',
