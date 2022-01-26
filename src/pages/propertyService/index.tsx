@@ -28,10 +28,12 @@ const Neighborhoods = memo(() => {
   }, []);
 
   return (
-    <div id="tableContent" style={{ height, padding: '33px 17px' }}>
-      <Tabs title={basicData.title} tabs={basicData.tabs} activeKey={key}>
-        <Receive />
-      </Tabs>
+    <div id="tableContent" style={{ height, background: '#f0f2f5' }}>
+      <div style={{ height: '100%', padding: '33px 17px' }}>
+        <Tabs title={basicData.title} tabs={basicData.tabs} activeKey={key}>
+          <Receive />
+        </Tabs>
+      </div>
     </div>
   );
 });

@@ -142,7 +142,7 @@ const Thing = memo(() => {
             >
               <a>删除</a>
             </Popconfirm>
-            <a href="#" onClick={() => goodsHandle(record)}>
+            <a onClick={() => goodsHandle(record)}>
               {statusButton(record.status)}
             </a>
           </Space>

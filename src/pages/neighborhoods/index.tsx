@@ -31,8 +31,9 @@ const Neighborhoods = memo(() => {
       changeKey(route.pathname);
     });
 
-    const pathName = window.location.pathname;
-    changeKey(pathName);
+    const path = window.location.hash.replace('#', '');
+
+    changeKey(path);
   }, []);
 
   const onChange = useCallback((key) => {
@@ -78,15 +79,17 @@ const Neighborhoods = memo(() => {
   }, []);
 
   return (
-    <div id="tableContent" style={{ height, padding: '33px 17px' }}>
-      <Tabs
-        title={basicData.title}
-        tabs={basicData.tabs}
-        activeKey={key}
-        onChange={onChange}
-      >
-        {renderDom(key)}
-      </Tabs>
+    <div id="tableContent" style={{ height, background: '#f0f2f5' }}>
+      <div style={{ height: '100%', padding: '33px 17px' }}>
+        <Tabs
+          title={basicData.title}
+          tabs={basicData.tabs}
+          activeKey={key}
+          onChange={onChange}
+        >
+          {renderDom(key)}
+        </Tabs>
+      </div>
     </div>
   );
 });

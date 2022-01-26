@@ -26,26 +26,28 @@ const GarbageSorting = memo(() => {
   }, []);
 
   return (
-    <div id="tableContent" style={{ height, padding: '33px 17px' }}>
-      <Tabs
-        title={basicData.title}
-        tabs={basicData.tabs}
-        activeKey={key}
-        render={
-          <div className={styles.render}>
-            <div className={styles.number}>
-              <span>累计分类次数</span>
-              <span>98</span>
+    <div id="tableContent" style={{ height, background: '#f0f2f5' }}>
+      <div style={{ height: '100%', padding: '33px 17px' }}>
+        <Tabs
+          title={basicData.title}
+          tabs={basicData.tabs}
+          activeKey={key}
+          render={
+            <div className={styles.render}>
+              <div className={styles.number}>
+                <span>累计分类次数</span>
+                <span>98</span>
+              </div>
+              <div className={styles.integral}>
+                <span>累计赠送积分</span>
+                <span>2451</span>
+              </div>
             </div>
-            <div className={styles.integral}>
-              <span>累计赠送积分</span>
-              <span>2451</span>
-            </div>
-          </div>
-        }
-      >
-        <Record />
-      </Tabs>
+          }
+        >
+          <Record />
+        </Tabs>
+      </div>
     </div>
   );
 });

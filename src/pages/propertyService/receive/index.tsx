@@ -104,7 +104,7 @@ const Receive = memo(() => {
     receiveList(pages).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.records);
-        setTotal(data?.data?.data.total);
+        setTotal(data?.data?.data?.total);
       }
     });
   }, [pages]);

@@ -1,15 +1,17 @@
-import react from 'react';
 import { defineConfig } from 'umi';
 
 export default defineConfig({
   layout: {
     name: '康田智慧服务',
-    locale: true,
+    locale: false,
     layout: 'side',
   },
   nodeModulesTransform: {
     type: 'none',
   },
+  publicPath: './',
+  history: { type: 'hash' },
+  // exportStatic: { htmlSuffix: true },
   headScripts: [
     {
       src: 'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js',
@@ -17,10 +19,6 @@ export default defineConfig({
     },
   ],
   routes: [
-    // {
-    //   path: '/',
-    //   component: '@/pages/login/index',
-    // },
     {
       name: '社区邻里',
       icon: 'team',
@@ -49,10 +47,6 @@ export default defineConfig({
       icon: 'home',
       path: '/propertyService',
       component: '@/pages/propertyService/index',
-      // headerRender: false,
-      // footerRender: false,
-      // menuRender: false,
-      // menuHeaderRender: true,
       routes: [
         {
           path: '/propertyService/receive',
@@ -92,15 +86,22 @@ export default defineConfig({
         },
       ],
     },
+    {
+      path: '/404',
+      component: '@/pages/404',
+    },
   ],
   fastRefresh: {},
+  dynamicImport: {
+    loading: '@/components/Loading',
+  },
   proxy: {
-    '/api': {
+    '/ocean': {
       // target: 'http://113.125.27.99:53993',
       target: 'http://cloud2.5gzvip.91tunnel.com',
       changeOrigin: true,
       pathRewrite: {
-        '/api': '',
+        '/ocean': '',
       },
     },
   },

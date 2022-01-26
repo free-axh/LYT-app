@@ -51,7 +51,6 @@ const Register = memo(() => {
             params: { id: record.id },
           }).then((res) => {
             if (res.status === 200) {
-              console.log('详情', res);
               setDetailData(res?.data?.data?.records?.[0]);
             }
           });

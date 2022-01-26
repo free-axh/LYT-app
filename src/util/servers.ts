@@ -20,7 +20,7 @@ import axios from 'axios';
 export const goodsUpdate = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goods/update',
+    url: '/ocean/goods/update',
     data: options,
   });
 
@@ -32,7 +32,7 @@ export const goodsUpdate = (options: object) =>
 export const goodsDelete = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goods/delete',
+    url: '/ocean/goods/delete',
     data: options,
   });
 
@@ -44,7 +44,7 @@ export const goodsDelete = (options: object) =>
 export const goodsList = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goods/page/getList',
+    url: '/ocean/goods/page/getList',
     data: options,
   });
 
@@ -56,7 +56,7 @@ export const goodsList = (options: object) =>
 export const goodsDetail = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goods/getById',
+    url: '/ocean/goods/getById',
     data: options,
   });
 
@@ -68,7 +68,7 @@ export const goodsDetail = (options: object) =>
 export const goodsAuditing = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/auditing',
+    url: '/ocean/goodsShare/auditing',
     data: options,
   });
 
@@ -80,7 +80,7 @@ export const goodsAuditing = (options: object) =>
 export const goodsAddType = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/addGoodsType',
+    url: '/ocean/goodsShare/addGoodsType',
     data: options,
   });
 
@@ -92,7 +92,7 @@ export const goodsAddType = (options: object) =>
 export const goodsUpdateType = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/updateGoodsType',
+    url: '/ocean/goodsShare/updateGoodsType',
     data: options,
   });
 
@@ -104,7 +104,7 @@ export const goodsUpdateType = (options: object) =>
 export const goodsDeleteType = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/deleteGoodsType',
+    url: '/ocean/goodsShare/deleteGoodsType',
     data: options,
   });
 
@@ -116,7 +116,7 @@ export const goodsDeleteType = (options: object) =>
 export const goodsTypeList = (options: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/page/getGoodsTypeList',
+    url: '/ocean/goodsShare/page/getGoodsTypeList',
     data: options,
   });
 
@@ -128,7 +128,7 @@ export const goodsTypeList = (options: object) =>
 export const goodsApply = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/apply',
+    url: '/ocean/goodsShare/apply',
     data: options,
   });
 
@@ -140,7 +140,7 @@ export const goodsApply = (options?: object) =>
 export const receiveList = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/objLend/page',
+    url: '/ocean/objLend/page',
     data: options,
   });
 
@@ -152,7 +152,7 @@ export const receiveList = (options?: object) =>
 export const receiveDetail = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/objLend/list',
+    url: '/ocean/objLend/list',
     data: options,
   });
 
@@ -170,7 +170,7 @@ export const receiveDetail = (options?: object) =>
 export const receiveApproval = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/objLend/approval',
+    url: '/ocean/objLend/approval',
     data: options,
   });
 
@@ -182,7 +182,7 @@ export const receiveApproval = (options?: object) =>
 export const registerList = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/violation/page',
+    url: '/ocean/violation/page',
     data: options,
   });
 
@@ -194,7 +194,7 @@ export const registerList = (options?: object) =>
 export const getGoodsList = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/goodsShare/page/getGoodsList',
+    url: '/ocean/goodsShare/page/getGoodsList',
     data: options,
   });
 
@@ -206,6 +206,6 @@ export const getGoodsList = (options?: object) =>
 export const getGoodsInfo = (options?: object) =>
   axios({
     method: 'post',
-    url: '/api/objWarehouse/list',
+    url: '/ocean/objWarehouse/list',
     data: options,
   });
