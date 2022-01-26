@@ -9,6 +9,7 @@ import {
 } from '@/util/servers';
 import Detail from './detail';
 import Modal from './modal';
+import { getDate } from '@/util/function';
 
 const Receive = memo(() => {
   const [pages, setPages] = useState({
@@ -126,7 +127,7 @@ const Receive = memo(() => {
     if (userJson.username && userJson.userId) {
       const options = {
         id: modalData,
-        approvalDate: new Date().getTime(),
+        approvalDate: getDate(new Date().getTime()),
         approvalFailExplain: values.approvalFailExplain,
         approvalStatus: values.approvalStatus,
         approvalUser: userJson.username,
