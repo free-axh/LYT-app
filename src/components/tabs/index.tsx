@@ -66,9 +66,7 @@ const NavTabs: React.FC<IProps> = memo(
               <TabPane tab={item.title} key={item.code} />
             ))}
           </Tabs>
-          <div className={styles.table} style={{ height }}>
-            {props.children}
-          </div>
+          <div className={styles.table}>{props.children}</div>
         </div>
       </div>
     );

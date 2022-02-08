@@ -97,8 +97,8 @@ export default defineConfig({
   },
   proxy: {
     '/ocean': {
-      // target: 'http://113.125.27.99:53993',
-      target: 'http://cloud2.5gzvip.91tunnel.com',
+      target: 'http://113.125.27.99:53993',
+      // target: 'http://cloud2.5gzvip.91tunnel.com',
       changeOrigin: true,
       pathRewrite: {
         '/ocean': '',

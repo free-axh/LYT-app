@@ -22,8 +22,6 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
     }
   };
 
-  console.log('data', data);
-
   return (
     <Drawer
       visible={visible}

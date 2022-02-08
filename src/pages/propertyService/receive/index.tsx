@@ -70,7 +70,6 @@ const Receive = memo(() => {
         async function detailHandle(record: any) {
           setDetailVisible(true);
           const goodsinfo = await getGoodsInfo({ id: record.objId });
-          console.log('goodsinfo', goodsinfo);
           const detail = await receiveDetail({ id: record.id, status: '' });
           if (goodsinfo.status === 200 && detail.status === 200) {
             const data = Object.assign(
@@ -124,7 +123,7 @@ const Receive = memo(() => {
   }) {
     const userData: string | null = window.sessionStorage.getItem('userData');
     const userJson = JSON.parse(userData as string);
-    if (userJson.username && userJson.userId) {
+    if (userJson && userJson.username && userJson.userId) {
       const options = {
         id: modalData,
         approvalDate: getDate(new Date().getTime()),
