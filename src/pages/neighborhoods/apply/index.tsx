@@ -76,6 +76,7 @@ const Apply = memo(() => {
       columns={columns}
       dataSource={data}
       search
+      total={total}
       onQuery={onQuery}
       onPageChange={onPageChange}
     />

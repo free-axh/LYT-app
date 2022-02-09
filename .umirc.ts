@@ -97,12 +97,12 @@ export default defineConfig({
   },
   proxy: {
     '/ocean': {
-      target: 'http://113.125.27.99:53993',
+      target: 'https://cuiguang.btdit.cn/',
       // target: 'http://cloud2.5gzvip.91tunnel.com',
       changeOrigin: true,
-      pathRewrite: {
-        '/ocean': '',
-      },
+      // pathRewrite: {
+      //   '/ocean': '',
+      // },
     },
   },
 });

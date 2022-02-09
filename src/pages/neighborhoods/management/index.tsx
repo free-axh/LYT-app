@@ -149,6 +149,7 @@ const Management = memo(() => {
       <Table
         columns={columns}
         dataSource={data}
+        total={total}
         search
         searchRender={
           <Button onClick={addGoodsType} type="primary" icon={<PlusOutlined />}>

@@ -211,6 +211,7 @@ const Thing = memo(() => {
       <Table
         columns={columns}
         dataSource={data}
+        total={total}
         search
         onQuery={onQuery}
         onPageChange={onPageChange}
