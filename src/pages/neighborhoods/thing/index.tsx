@@ -24,6 +24,8 @@ const Thing = memo(() => {
     pageSize: 10,
   });
   const [total, setTotal] = useState(0);
+  const [queryValue, setQueryValue] = useState('');
+  const [current, setCurrent] = useState(1);
 
   const columns = [
     {
@@ -152,7 +154,9 @@ const Thing = memo(() => {
   ];
 
   useEffect(() => {
-    goodsList(pages).then((data) => {
+    setData(undefined);
+    const options = Object.assign({}, pages, { params: { name: queryValue } });
+    goodsList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.records);
         setTotal(data?.data?.data?.total);
@@ -162,7 +166,8 @@ const Thing = memo(() => {
 
   function reload() {
     setData(undefined);
-    goodsList(pages).then((data) => {
+    const options = Object.assign({}, pages, { params: { name: queryValue } });
+    goodsList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.records);
         setTotal(data?.data?.data?.total);
@@ -189,14 +194,12 @@ const Thing = memo(() => {
   }
 
   function onQuery(value: string) {
-    setData(undefined);
-    const options = Object.assign({}, pages, { params: { name: value } });
-    goodsList(options).then((data) => {
-      if (data.status === 200) {
-        setData(data?.data?.data?.records);
-        setTotal(data?.data?.data?.total);
-      }
+    setQueryValue(value);
+    setPages({
+      pageNo: 1,
+      pageSize: 10,
     });
+    setCurrent(1);
   }
 
   function onPageChange(page: number, pageSize: number) {
@@ -204,6 +207,7 @@ const Thing = memo(() => {
       pageNo: page,
       pageSize: pageSize,
     });
+    setCurrent(page);
   }
 
   return (
@@ -213,6 +217,7 @@ const Thing = memo(() => {
         dataSource={data}
         total={total}
         search
+        current={current}
         onQuery={onQuery}
         onPageChange={onPageChange}
       />

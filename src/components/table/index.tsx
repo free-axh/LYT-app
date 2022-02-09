@@ -20,6 +20,7 @@ interface IProps {
   total?: number;
   pageSize?: number;
   onPageChange?: Function;
+  current?: number;
 }
 
 interface IData {
@@ -41,9 +42,10 @@ const SearchTable: React.FC<IProps> = memo(
     total = 0,
     pageSize = 10,
     onPageChange,
+    current,
     ...props
   }) => {
-    const [height, setHeight] = useState(0);
+    // const [height, setHeight] = useState(0);
     const [loading, setLoading] = useState(false);
     const staticRef = useRef({ value: '' });
 
@@ -51,18 +53,18 @@ const SearchTable: React.FC<IProps> = memo(
       setLoading(dataSource ? false : true);
     }, [dataSource]);
 
-    useEffect(() => {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (let entry of entries) {
-          setHeight(entry.contentRect.height - 171);
-        }
-      });
-      const element = document.getElementById('tableContent') as HTMLElement;
-      resizeObserver.observe(element);
-      return () => {
-        resizeObserver.unobserve(element);
-      };
-    }, []);
+    // useEffect(() => {
+    //   const resizeObserver = new ResizeObserver((entries) => {
+    //     for (let entry of entries) {
+    //       setHeight(entry.contentRect.height - 171);
+    //     }
+    //   });
+    //   const element = document.getElementById('tableContent') as HTMLElement;
+    //   resizeObserver.observe(element);
+    //   return () => {
+    //     resizeObserver.unobserve(element);
+    //   };
+    // }, []);
 
     function onSearch() {
       if (onQuery) {
@@ -104,8 +106,13 @@ const SearchTable: React.FC<IProps> = memo(
           columns={columns}
           dataSource={dataSource}
           bordered
-          scroll={{ y: height }}
-          pagination={{ total, pageSize, onChange: onPaginationChange }}
+          // scroll={{ y: height }}
+          pagination={{
+            total,
+            pageSize,
+            current,
+            onChange: onPaginationChange,
+          }}
           {...props}
         />
       </div>

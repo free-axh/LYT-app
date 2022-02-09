@@ -23,6 +23,8 @@ const Receive = memo(() => {
   const [modal, setModal] = useState(false);
   const [modalData, setModalData] = useState(undefined);
   const [total, setTotal] = useState(0);
+  const [queryValue, setQueryValue] = useState('');
+  const [current, setCurrent] = useState(1);
 
   const columns = [
     {
@@ -100,13 +102,17 @@ const Receive = memo(() => {
   ];
 
   useEffect(() => {
-    receiveList(pages).then((data) => {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { objName: queryValue, status: '' },
+    });
+    receiveList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.records);
         setTotal(data?.data?.data?.total);
       }
     });
-  }, [pages]);
+  }, [pages, queryValue]);
 
   function onDetailClose() {
     setDetailVisible(false);
@@ -135,6 +141,7 @@ const Receive = memo(() => {
       const data = await receiveApproval(options);
       if (data.status === 200 && data.data.code === 0) {
         message.success('审核完成');
+        reload();
       } else {
         message.error('审核失败');
       }
@@ -143,25 +150,35 @@ const Receive = memo(() => {
     }
   }
 
+  function reload() {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { objName: queryValue, status: '' },
+    });
+    receiveList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
+  }
+
   function onPageChange(page: number, pageSize: number) {
     setPages({
       pageNo: page,
       pageSize: pageSize,
     });
+    setCurrent(page);
   }
 
   // 模糊查询
   function onQuery(value: string) {
     setData(undefined);
-    const options = Object.assign({}, pages, {
-      params: { objName: value, status: '' },
+    setPages({
+      pageNo: 1,
+      pageSize: 10,
     });
-    receiveList(options).then((data) => {
-      if (data.status === 200) {
-        setData(data?.data?.data?.records);
-        setTotal(data?.data?.data.total);
-      }
-    });
+    setCurrent(1);
   }
 
   return (
@@ -170,6 +187,7 @@ const Receive = memo(() => {
         columns={columns}
         dataSource={data}
         search
+        current={current}
         total={total}
         onPageChange={onPageChange}
         onQuery={onQuery}

@@ -23,15 +23,15 @@ export const layout = ({
         history.push('/neighborhoods/thing');
       }
     },
-    headerRender: false,
-    footerRender: false,
-    menuRender: false,
-    menuHeaderRender: false,
+    // headerRender: false,
+    // footerRender: false,
+    // menuRender: false,
+    // menuHeaderRender: false,
     ...initialState?.settings,
   };
 };
 
-(window as any).formAppUser = (user: any) => {
+window.formAppUser = (user: any) => {
   console.log('user: ', user);
   const userJson = JSON.parse(user);
   window.sessionStorage.setItem('userData', user);

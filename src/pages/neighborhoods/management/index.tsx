@@ -20,6 +20,8 @@ const Management = memo(() => {
   const [data, setData] = useState(undefined);
   const [modalTitle, setModalTitle] = useState('');
   const [editData, setEditData] = useState();
+  const [queryValue, setQueryValue] = useState('');
+  const [current, setCurrent] = useState(1);
 
   const columns = [
     {
@@ -75,13 +77,15 @@ const Management = memo(() => {
   ];
 
   useEffect(() => {
-    goodsTypeList(pages).then((data) => {
+    setData(undefined);
+    const options = Object.assign({}, pages, { params: { name: queryValue } });
+    goodsTypeList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.list);
         setTotal(data?.data?.data?.total);
       }
     });
-  }, [pages]);
+  }, [pages, queryValue]);
 
   function addGoodsType() {
     setModalTitle('添加分类');
@@ -118,17 +122,7 @@ const Management = memo(() => {
 
   function reload() {
     setData(undefined);
-    goodsTypeList(pages).then((data) => {
-      if (data.status === 200) {
-        setData(data?.data?.data?.list);
-        setTotal(data?.data?.data?.total);
-      }
-    });
-  }
-
-  function onQuery(value: string) {
-    setData(undefined);
-    const options = Object.assign({}, pages, { params: { name: value } });
+    const options = Object.assign({}, pages, { params: { name: queryValue } });
     goodsTypeList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.list);
@@ -137,11 +131,21 @@ const Management = memo(() => {
     });
   }
 
+  function onQuery(value: string) {
+    setQueryValue(value);
+    setPages({
+      pageNo: 1,
+      pageSize: 10,
+    });
+    setCurrent(1);
+  }
+
   function onPageChange(page: number, pageSize: number) {
     setPages({
       pageNo: page,
       pageSize: pageSize,
     });
+    setCurrent(page);
   }
 
   return (
@@ -151,6 +155,7 @@ const Management = memo(() => {
         dataSource={data}
         total={total}
         search
+        current={current}
         searchRender={
           <Button onClick={addGoodsType} type="primary" icon={<PlusOutlined />}>
             添加分类

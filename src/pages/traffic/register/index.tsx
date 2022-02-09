@@ -12,6 +12,9 @@ const Register = memo(() => {
   const [total, setTotal] = useState(0);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState(undefined);
+  const [queryValue, setQueryValue] = useState('');
+  const [current, setCurrent] = useState(1);
+
   const columns = [
     {
       title: '车牌号',
@@ -62,7 +65,11 @@ const Register = memo(() => {
   ];
 
   useEffect(() => {
-    registerList(pages).then((res) => {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { carNumber: queryValue },
+    });
+    registerList(options).then((res) => {
       if (res.status === 200) {
         setData(res?.data?.data?.records);
         setTotal(res?.data?.data?.total);
@@ -76,16 +83,12 @@ const Register = memo(() => {
 
   // 模糊查询
   function onQuery(value: string) {
-    setData(undefined);
-    const options = Object.assign({}, pages, {
-      params: { carNumber: value },
+    setQueryValue(value);
+    setPages({
+      pageNo: 1,
+      pageSize: 10,
     });
-    registerList(options).then((data) => {
-      if (data.status === 200) {
-        setData(data?.data?.data?.records);
-        setTotal(data?.data?.data.total);
-      }
-    });
+    setCurrent(1);
   }
 
   function onPageChange(page: number, pageSize: number) {
@@ -93,6 +96,7 @@ const Register = memo(() => {
       pageNo: page,
       pageSize: pageSize,
     });
+    setCurrent(page);
   }
 
   return (
@@ -101,6 +105,7 @@ const Register = memo(() => {
         columns={columns}
         dataSource={data}
         search
+        current={current}
         total={total}
         onQuery={onQuery}
         onPageChange={onPageChange}

@@ -10,6 +10,8 @@ const Apply = memo(() => {
 
   const [data, setData] = useState(undefined);
   const [total, setTotal] = useState(0);
+  const [queryValue, setQueryValue] = useState('');
+  const [current, setCurrent] = useState(1);
 
   const columns = [
     {
@@ -45,23 +47,23 @@ const Apply = memo(() => {
   ];
 
   useEffect(() => {
-    getGoodsList(pages).then((res) => {
-      if (res.status === 200) {
-        setData(res?.data?.data?.list);
-        setTotal(res?.data?.data?.total);
-      }
-    });
-  }, [pages]);
-
-  function onQuery(value: string) {
     setData(undefined);
-    const options = Object.assign({}, pages, { name: value });
+    const options = Object.assign({}, pages, { name: queryValue });
     getGoodsList(options).then((res) => {
       if (res.status === 200) {
         setData(res?.data?.data?.list);
         setTotal(res?.data?.data?.total);
       }
     });
+  }, [pages, queryValue]);
+
+  function onQuery(value: string) {
+    setQueryValue(value);
+    setPages({
+      pageNo: 1,
+      pageSize: 10,
+    });
+    setCurrent(1);
   }
 
   function onPageChange(page: number, pageSize: number) {
@@ -69,6 +71,7 @@ const Apply = memo(() => {
       pageNo: page,
       pageSize: pageSize,
     });
+    setCurrent(page);
   }
 
   return (
@@ -76,6 +79,7 @@ const Apply = memo(() => {
       columns={columns}
       dataSource={data}
       search
+      current={current}
       total={total}
       onQuery={onQuery}
       onPageChange={onPageChange}
