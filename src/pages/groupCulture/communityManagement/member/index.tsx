@@ -1,6 +1,18 @@
 import { memo, useEffect, useState } from 'react';
-import { Button, Space, Tag, message, Popconfirm, List, Avatar } from 'antd';
+import {
+  Button,
+  Space,
+  Tag,
+  message,
+  Popconfirm,
+  List,
+  Avatar,
+  Descriptions,
+  Input,
+  Pagination,
+} from 'antd';
 import Tabs from '@/components/tabs';
+import styles from './index.less';
 
 const Member = memo(() => {
   const basicData = {
@@ -10,16 +22,16 @@ const Member = memo(() => {
 
   const data = [
     {
-      title: 'Ant Design Title 1',
+      name: '张三',
     },
     {
-      title: 'Ant Design Title 2',
+      name: '张三',
     },
     {
-      title: 'Ant Design Title 3',
+      name: '张三',
     },
     {
-      title: 'Ant Design Title 4',
+      name: '张三',
     },
   ];
 
@@ -31,19 +43,37 @@ const Member = memo(() => {
           tabs={basicData.tabs}
           activeKey={'member'}
         >
+          <div className={styles.header}>
+            <div className={styles.left}>
+              <h3 className={styles.title}>书法社群</h3>
+            </div>
+            <div className={styles.right}>
+              <div className={styles.search}>
+                <Input placeholder="请输入关键字查询" allowClear />
+              </div>
+              <Button>查询</Button>
+            </div>
+          </div>
           <List
             itemLayout="horizontal"
             dataSource={data}
             renderItem={(item) => (
-              <List.Item>
+              <List.Item actions={[<a key="list-loadmore-edit">移除</a>]}>
                 <List.Item.Meta
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  title={<a href="https://ant.design">{item.title}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  title={<a href="https://ant.design">{item.name}</a>}
+                  description={
+                    <Descriptions>
+                      <Descriptions.Item label="发表文章">23</Descriptions.Item>
+                    </Descriptions>
+                  }
                 />
               </List.Item>
             )}
           />
+          <div className={styles.pagination}>
+            <Pagination defaultCurrent={6} total={500} />
+          </div>
         </Tabs>
       </div>
     </div>

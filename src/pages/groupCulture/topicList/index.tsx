@@ -3,6 +3,7 @@ import { Button, Space, Tag, message, Popconfirm } from 'antd';
 import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import Modal from './modal';
+import InfoModal from './infoModal';
 
 const TopicList = memo(() => {
   const basicData = {
@@ -15,11 +16,28 @@ const TopicList = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState([
+    {
+      name: '好机会',
+      userName: '',
+      phone: 12,
+      typeName: 30,
+      startTime: '张三',
+      startTime1: '2019-9-5 21:14:14',
+      startTime2: '待审核',
+    },
+  ]);
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
+  const [infoModal, setInfoModal] = useState(false);
+  const [detail, setDetail] = useState({
+    time: '2022-3-7 00:36:38',
+    persion: '张三',
+    info: '审核拒绝',
+    resion: '内容违规',
+  });
 
   const columns = [
     {
@@ -54,14 +72,14 @@ const TopicList = memo(() => {
     },
     {
       title: '发布时间',
-      key: 'startTime',
-      dataIndex: 'startTime',
+      key: 'startTime1',
+      dataIndex: 'startTime1',
       align: 'center' as 'center',
     },
     {
       title: '状态',
-      key: 'startTime',
-      dataIndex: 'startTime',
+      key: 'startTime2',
+      dataIndex: 'startTime2',
       align: 'center' as 'center',
     },
     {
@@ -71,6 +89,15 @@ const TopicList = memo(() => {
       align: 'center' as 'center',
       render: (text: any, record: any) => {
         function onDelete(id: number) {}
+
+        function onAudit(id: number) {
+          setModal(true);
+        }
+
+        function onDetail(id: number) {
+          setInfoModal(true);
+        }
+
         return (
           <Space size="middle">
             <Popconfirm
@@ -79,8 +106,8 @@ const TopicList = memo(() => {
             >
               <a>删除</a>
             </Popconfirm>
-            <a>审核</a>
-            <a>审核信息</a>
+            <a onClick={() => onAudit(record.id)}>审核</a>
+            <a onClick={() => onDetail(record.id)}>审核信息</a>
           </Space>
         );
       },
@@ -88,7 +115,7 @@ const TopicList = memo(() => {
   ];
 
   useEffect(() => {
-    setData(undefined);
+    // setData(undefined);
     const options = Object.assign({}, pages, { name: queryValue });
   }, [pages, queryValue]);
 
@@ -115,6 +142,10 @@ const TopicList = memo(() => {
 
   function onModalSubmit(values: { resultFlag: string; failReason: string }) {}
 
+  function onInfoModalClose() {
+    setInfoModal(false);
+  }
+
   return (
     <div id="tableContent" style={{ background: '#f0f2f5' }}>
       <div style={{ height: '100%', padding: '33px 17px' }}>
@@ -133,6 +164,12 @@ const TopicList = memo(() => {
             title="社群审核"
             onClose={onModalClose}
             onSubmit={onModalSubmit}
+          />
+          <InfoModal
+            visible={infoModal}
+            title="社群审核"
+            data={detail}
+            onClose={onInfoModalClose}
           />
         </Tabs>
       </div>

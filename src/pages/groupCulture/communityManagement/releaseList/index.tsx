@@ -3,11 +3,13 @@ import { Button, Space, Tag, message, Popconfirm } from 'antd';
 import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import Modal from './modal';
+import InfoModal from './infoModal';
+import styles from './index.less';
 
 const ReleaseList = memo(() => {
   const basicData = {
-    title: '话题管理',
-    tabs: [{ title: '话题列表', code: 'topic' }],
+    title: '社群管理',
+    tabs: [{ title: '发布列表', code: 'topic' }],
   };
 
   const [pages, setPages] = useState({
@@ -15,11 +17,28 @@ const ReleaseList = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState([
+    {
+      name: '好机会',
+      userName: '',
+      phone: 12,
+      typeName: 30,
+      startTime: '张三',
+      startTime1: '2019-9-5 21:14:14',
+      startTime2: '待审核',
+    },
+  ]);
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
+  const [infoModal, setInfoModal] = useState(false);
+  const [detail, setDetail] = useState({
+    time: '2022-3-7 00:36:38',
+    persion: '张三',
+    info: '审核拒绝',
+    resion: '内容违规',
+  });
 
   const columns = [
     {
@@ -71,6 +90,14 @@ const ReleaseList = memo(() => {
       align: 'center' as 'center',
       render: (text: any, record: any) => {
         function onDelete(id: number) {}
+
+        function onAudit(id: number) {
+          setModal(true);
+        }
+
+        function onDetail(id: number) {
+          setInfoModal(true);
+        }
         return (
           <Space size="middle">
             <Popconfirm
@@ -79,8 +106,8 @@ const ReleaseList = memo(() => {
             >
               <a>删除</a>
             </Popconfirm>
-            <a>审核</a>
-            <a>审核信息</a>
+            <a onClick={() => onAudit(record.id)}>审核</a>
+            <a onClick={() => onDetail(record.id)}>审核信息</a>
           </Space>
         );
       },
@@ -88,7 +115,7 @@ const ReleaseList = memo(() => {
   ];
 
   useEffect(() => {
-    setData(undefined);
+    // setData(undefined);
     const options = Object.assign({}, pages, { name: queryValue });
   }, [pages, queryValue]);
 
@@ -115,10 +142,15 @@ const ReleaseList = memo(() => {
 
   function onModalSubmit(values: { resultFlag: string; failReason: string }) {}
 
+  function onInfoModalClose() {
+    setInfoModal(false);
+  }
+
   return (
     <div id="tableContent" style={{ background: '#f0f2f5' }}>
       <div style={{ height: '100%', padding: '33px 17px' }}>
         <Tabs title={basicData.title} tabs={basicData.tabs} activeKey={'topic'}>
+          <h3 className={styles.title}>书法社群</h3>
           <Table
             columns={columns}
             dataSource={data}
@@ -133,6 +165,12 @@ const ReleaseList = memo(() => {
             title="社群审核"
             onClose={onModalClose}
             onSubmit={onModalSubmit}
+          />
+          <InfoModal
+            visible={infoModal}
+            title="社群审核"
+            data={detail}
+            onClose={onInfoModalClose}
           />
         </Tabs>
       </div>

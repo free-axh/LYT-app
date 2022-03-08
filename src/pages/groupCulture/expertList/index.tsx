@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { Button, Space, Tag, message, Popconfirm } from 'antd';
 import Tabs from '@/components/tabs';
 import Table from '@/components/table';
+import { PlusOutlined } from '@ant-design/icons';
 
 const ExpertList = memo(() => {
   const basicData = {
@@ -14,7 +15,13 @@ const ExpertList = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState([
+    {
+      name: 1111,
+      userName: '书法达人',
+      phone: '222',
+    },
+  ]);
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
@@ -67,7 +74,7 @@ const ExpertList = memo(() => {
   ];
 
   useEffect(() => {
-    setData(undefined);
+    // setData(undefined);
     const options = Object.assign({}, pages, { name: queryValue });
   }, [pages, queryValue]);
 
@@ -104,6 +111,11 @@ const ExpertList = memo(() => {
             total={total}
             onQuery={onQuery}
             onPageChange={onPageChange}
+            searchRender={
+              <Button type="primary" icon={<PlusOutlined />}>
+                添加达人
+              </Button>
+            }
           />
         </Tabs>
       </div>
