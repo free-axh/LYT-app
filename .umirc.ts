@@ -20,6 +20,40 @@ export default defineConfig({
   ],
   routes: [
     {
+      name: '社团文化',
+      icon: 'team',
+      routes: [
+        {
+          path: '/groupCulture/topicList',
+          component: '@/pages/groupCulture/topicList/index',
+          name: '话题列表',
+        },
+        {
+          path: '/groupCulture/expertList',
+          component: '@/pages/groupCulture/expertList/index',
+          name: '达人列表',
+        },
+        {
+          name: '社群管理',
+          icon: 'team',
+          routes: [
+            {
+              path: '/groupCulture/releaseList',
+              component:
+                '@/pages/groupCulture/communityManagement/releaseList/index',
+              name: '发布列表',
+            },
+            {
+              path: '/groupCulture/member',
+              component:
+                '@/pages/groupCulture/communityManagement/member/index',
+              name: '社群成员',
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: '社区邻里',
       icon: 'team',
       path: '/neighborhoods',
