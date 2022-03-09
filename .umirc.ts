@@ -102,21 +102,20 @@ export default defineConfig({
         },
         {
           name: '社群管理',
-          icon: 'team',
-          routes: [
-            {
-              path: '/groupCulture/releaseList',
-              component:
-                '@/pages/groupCulture/communityManagement/releaseList/index',
-              name: '发布列表',
-            },
-            {
-              path: '/groupCulture/member',
-              component:
-                '@/pages/groupCulture/communityManagement/member/index',
-              name: '社群成员',
-            },
-          ],
+          path: '/groupCulture/communityManagement',
+          component: '@/pages/groupCulture/communityManagement/index',
+        },
+        {
+          path: '/groupCulture/releaseList',
+          component: '@/pages/groupCulture/releaseList/index',
+          name: '发布列表',
+          hideInMenu: true,
+        },
+        {
+          path: '/groupCulture/member',
+          component: '@/pages/groupCulture/member/index',
+          name: '社群成员',
+          hideInMenu: true,
         },
       ],
     },

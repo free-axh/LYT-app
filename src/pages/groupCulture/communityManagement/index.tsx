@@ -1,15 +1,16 @@
 import { memo, useEffect, useState } from 'react';
 import { Button, Space, Tag, message, Popconfirm } from 'antd';
+import { history } from 'umi';
 import Tabs from '@/components/tabs';
 import Table from '@/components/table';
-import { PlusOutlined } from '@ant-design/icons';
 import Modal from './modal';
-import Detail from './detail';
+import InfoModal from './infoModal';
+import styles from './index.less';
 
-const ExpertList = memo(() => {
+const CommunityManagement = memo(() => {
   const basicData = {
-    title: '社区达人',
-    tabs: [{ title: '达人列表', code: 'expert' }],
+    title: '社群管理',
+    tabs: [{ title: '社群列表', code: 'community' }],
   };
 
   const [pages, setPages] = useState({
@@ -19,41 +20,56 @@ const ExpertList = memo(() => {
 
   const [data, setData] = useState([
     {
-      key: '1111',
-      name: '1111',
-      userName: '书法达人',
-      phone: '222',
+      name: '好机会',
+      userName: '',
+      phone: 12,
+      typeName: 30,
+      startTime: '张三',
+      startTime1: '2019-9-5 21:14:14',
+      startTime2: '待审核',
     },
   ]);
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
-  const [detailVisible, setDetailVisible] = useState(false);
+  const [infoModal, setInfoModal] = useState(false);
+  const [detail, setDetail] = useState({
+    time: '2022-3-7 00:36:38',
+    persion: '张三',
+    info: '审核拒绝',
+    resion: '内容违规',
+  });
 
   const columns = [
     {
-      title: '达人',
+      title: '社群名称',
       dataIndex: 'name',
       key: 'name',
       align: 'center' as 'center',
     },
     {
-      title: '达人类型',
+      title: '社群人数',
       dataIndex: 'userName',
       key: 'userName',
       align: 'center' as 'center',
     },
     {
-      title: '照片',
+      title: '创建时间',
       dataIndex: 'phone',
       key: 'phone',
       align: 'center' as 'center',
     },
     {
-      title: '添加时间',
+      title: '社群创建人',
       key: 'typeName',
       dataIndex: 'typeName',
+      align: 'center' as 'center',
+    },
+    {
+      title: '状态',
+      key: 'startTime',
+      dataIndex: 'startTime',
       align: 'center' as 'center',
     },
     {
@@ -63,18 +79,45 @@ const ExpertList = memo(() => {
       align: 'center' as 'center',
       render: (text: any, record: any) => {
         function onDelete(id: number) {}
-        function onDetail() {
-          setDetailVisible(true);
+
+        function onAudit(id: number) {
+          setModal(true);
+        }
+
+        function onDetail(id: number) {
+          setInfoModal(true);
         }
         return (
           <Space size="middle">
-            <a onClick={onDetail}>详情</a>
+            <a>社群信息</a>
+            <a
+              onClick={() =>
+                history.push('/groupCulture/member', {
+                  id: record.id,
+                  type: record.type,
+                })
+              }
+            >
+              社群成员
+            </a>
+            <a
+              onClick={() =>
+                history.push('/groupCulture/releaseList', {
+                  id: record.id,
+                  type: record.type,
+                })
+              }
+            >
+              发布列表
+            </a>
             <Popconfirm
               title="是否确定删除?"
               onConfirm={() => onDelete(record.id)}
             >
               <a>删除</a>
             </Popconfirm>
+            <a onClick={() => onAudit(record.id)}>审核</a>
+            <a onClick={() => onDetail(record.id)}>审核信息</a>
           </Space>
         );
       },
@@ -103,20 +146,14 @@ const ExpertList = memo(() => {
     setCurrent(page);
   }
 
-  function onAddPersion() {
-    setModal(true);
-  }
-
   function onModalClose() {
     setModal(false);
   }
 
-  function onModalSubmit(values: any) {
-    console.log('values', values);
-  }
+  function onModalSubmit(values: { resultFlag: string; failReason: string }) {}
 
-  function onDetailClose() {
-    setDetailVisible(false);
+  function onInfoModalClose() {
+    setInfoModal(false);
   }
 
   return (
@@ -125,7 +162,7 @@ const ExpertList = memo(() => {
         <Tabs
           title={basicData.title}
           tabs={basicData.tabs}
-          activeKey={'expert'}
+          activeKey={'community'}
         >
           <Table
             columns={columns}
@@ -135,27 +172,23 @@ const ExpertList = memo(() => {
             total={total}
             onQuery={onQuery}
             onPageChange={onPageChange}
-            searchRender={
-              <Button
-                onClick={onAddPersion}
-                type="primary"
-                icon={<PlusOutlined />}
-              >
-                添加达人
-              </Button>
-            }
+          />
+          <Modal
+            visible={modal}
+            title="社群审核"
+            onClose={onModalClose}
+            onSubmit={onModalSubmit}
+          />
+          <InfoModal
+            visible={infoModal}
+            title="社群审核"
+            data={detail}
+            onClose={onInfoModalClose}
           />
         </Tabs>
       </div>
-      <Modal
-        visible={modal}
-        title={'添加达人'}
-        onClose={onModalClose}
-        onSubmit={onModalSubmit}
-      />
-      <Detail visible={detailVisible} data={{}} onDetailClose={onDetailClose} />
     </div>
   );
 });
 
-export default ExpertList;
+export default CommunityManagement;

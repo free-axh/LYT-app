@@ -1,0 +1,51 @@
+.topMain {
+  display: flex;
+  align-items: center;
+  .picture {
+    flex: 1;
+    margin-right: 20px;
+  }
+  .text {
+    flex: 1;
+  }
+}
+
+.modal {
+  :global(.ant-modal-title) {
+    text-align: center;
+    color: #ffffff;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  :global(.ant-modal-header) {
+    background-color: #0c7bfe;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  // :global(.ant-modal-body) {
+  // text-align: center;
+  // }
+  :global(.ant-modal-content) {
+    border-radius: 10px;
+  }
+  :global(.ant-modal-footer) {
+    //    border: none;
+  }
+}
+.modalFooter {
+  display: flex;
+  div {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.title {
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 25px;
+}
+
+.editor {
+  border: 1px solid #d9d9d9;
+}
