@@ -5,7 +5,7 @@ import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import Modal from './modal';
 import InfoModal from './infoModal';
-import styles from './index.less';
+import { getCommunityList } from '@/util/servers';
 
 const CommunityManagement = memo(() => {
   const basicData = {
@@ -18,19 +18,9 @@ const CommunityManagement = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState([
-    {
-      name: '好机会',
-      userName: '',
-      phone: 12,
-      typeName: 30,
-      startTime: '张三',
-      startTime1: '2019-9-5 21:14:14',
-      startTime2: '待审核',
-    },
-  ]);
+  const [data, setData] = useState(undefined);
   const [total, setTotal] = useState(0);
-  const [queryValue, setQueryValue] = useState('');
+  const [queryValue, setQueryValue] = useState<string | null>(null);
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
   const [infoModal, setInfoModal] = useState(false);
@@ -44,33 +34,43 @@ const CommunityManagement = memo(() => {
   const columns = [
     {
       title: '社群名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'title',
+      key: 'title',
       align: 'center' as 'center',
     },
     {
       title: '社群人数',
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'total',
+      key: 'total',
       align: 'center' as 'center',
     },
     {
       title: '创建时间',
-      dataIndex: 'phone',
-      key: 'phone',
+      dataIndex: 'createTime',
+      key: 'createTime',
       align: 'center' as 'center',
     },
     {
       title: '社群创建人',
-      key: 'typeName',
-      dataIndex: 'typeName',
+      key: 'userName',
+      dataIndex: 'userName',
       align: 'center' as 'center',
     },
     {
       title: '状态',
-      key: 'startTime',
-      dataIndex: 'startTime',
+      key: 'checkStatus',
+      dataIndex: 'checkStatus',
       align: 'center' as 'center',
+      render: (t: number) => {
+        switch (t) {
+          case 0:
+            return '待审核';
+          case 1:
+            return '已通过';
+          case 2:
+            return '已拒绝';
+        }
+      },
     },
     {
       title: '操作',
@@ -116,8 +116,11 @@ const CommunityManagement = memo(() => {
             >
               <a>删除</a>
             </Popconfirm>
-            <a onClick={() => onAudit(record.id)}>审核</a>
-            <a onClick={() => onDetail(record.id)}>审核信息</a>
+            {record.checkStatus === 0 ? (
+              <a onClick={() => onAudit(record.id)}>审核</a>
+            ) : (
+              <a onClick={() => onDetail(record.id)}>审核信息</a>
+            )}
           </Space>
         );
       },
@@ -125,12 +128,18 @@ const CommunityManagement = memo(() => {
   ];
 
   useEffect(() => {
-    // setData(undefined);
-    const options = Object.assign({}, pages, { name: queryValue });
+    setData(undefined);
+    const options = Object.assign({}, pages, { params: { title: queryValue } });
+    getCommunityList(options).then((res) => {
+      if (res.status === 200 && res.data && res.data.code === 0) {
+        setData(res.data.data.records);
+        setTotal(res.data.data.total);
+      }
+    });
   }, [pages, queryValue]);
 
   function onQuery(value: string) {
-    setQueryValue(value);
+    setQueryValue(value === '' ? null : value);
     setPages({
       pageNo: 1,
       pageSize: 10,

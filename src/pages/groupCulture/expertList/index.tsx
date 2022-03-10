@@ -1,10 +1,11 @@
 import { memo, useEffect, useState } from 'react';
-import { Button, Space, Tag, message, Popconfirm } from 'antd';
+import { Button, Space, Tag, message, Popconfirm, Image } from 'antd';
 import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import { PlusOutlined } from '@ant-design/icons';
 import Modal from './modal';
 import Detail from './detail';
+import { getExpertList, addExpert, deleteExpert } from '@/util/servers';
 
 const ExpertList = memo(() => {
   const basicData = {
@@ -17,43 +18,50 @@ const ExpertList = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState([
-    {
-      key: '1111',
-      name: '1111',
-      userName: '书法达人',
-      phone: '222',
-    },
-  ]);
+  const [data, setData] = useState(undefined);
   const [total, setTotal] = useState(0);
-  const [queryValue, setQueryValue] = useState('');
+  const [queryValue, setQueryValue] = useState<string | null>(null);
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
   const [detailVisible, setDetailVisible] = useState(false);
+  const [detailData, setDetailData] = useState();
 
   const columns = [
     {
       title: '达人',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'peopleName',
+      key: 'peopleName',
       align: 'center' as 'center',
     },
     {
       title: '达人类型',
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'peopleType',
+      key: 'peopleType',
       align: 'center' as 'center',
+      render: (t: string) => {
+        switch (t) {
+          case '0':
+            return '书法';
+          case '1':
+            return '手工';
+          case '2':
+            return '美食';
+        }
+      },
     },
     {
       title: '照片',
-      dataIndex: 'phone',
-      key: 'phone',
+      dataIndex: 'peoplePhoto',
+      key: 'peoplePhoto',
       align: 'center' as 'center',
+      render: (t: string) => {
+        return <Image height={60} width={60} src={`/ocean${t}`} />;
+      },
     },
     {
       title: '添加时间',
-      key: 'typeName',
-      dataIndex: 'typeName',
+      key: 'createTime',
+      dataIndex: 'createTime',
       align: 'center' as 'center',
     },
     {
@@ -62,13 +70,23 @@ const ExpertList = memo(() => {
       dataIndex: 'handle',
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function onDelete(id: number) {}
-        function onDetail() {
+        function onDelete(id: number) {
+          deleteExpert({ id: record.id }).then((res) => {
+            if (res.status === 200 && res?.data?.code === 0) {
+              message.success('删除成功');
+              reload();
+            } else {
+              message.error('删除失败');
+            }
+          });
+        }
+        function onDetail(record: any) {
+          setDetailData(record);
           setDetailVisible(true);
         }
         return (
           <Space size="middle">
-            <a onClick={onDetail}>详情</a>
+            <a onClick={() => onDetail(record)}>详情</a>
             <Popconfirm
               title="是否确定删除?"
               onConfirm={() => onDelete(record.id)}
@@ -82,12 +100,20 @@ const ExpertList = memo(() => {
   ];
 
   useEffect(() => {
-    // setData(undefined);
-    const options = Object.assign({}, pages, { name: queryValue });
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { peopleName: queryValue },
+    });
+    getExpertList(options).then((res) => {
+      if (res.status === 200 && res.data && res.data.code === 0) {
+        setData(res.data.data.records);
+        setTotal(res.data.data.total);
+      }
+    });
   }, [pages, queryValue]);
 
   function onQuery(value: string) {
-    setQueryValue(value);
+    setQueryValue(value === '' ? null : value);
     setPages({
       pageNo: 1,
       pageSize: 10,
@@ -111,8 +137,34 @@ const ExpertList = memo(() => {
     setModal(false);
   }
 
+  function reload() {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { peopleName: queryValue },
+    });
+    getExpertList(options).then((res) => {
+      if (res.status === 200) {
+        setData(res?.data?.data?.records);
+        setTotal(res?.data?.data?.total);
+      }
+    });
+  }
+
+  /**
+   * 添加达人-提交
+   * @param values
+   */
   function onModalSubmit(values: any) {
-    console.log('values', values);
+    // console.log('values', values);
+    addExpert(values).then((res) => {
+      setModal(false);
+      if (res.status === 200 && res.data?.code === 0) {
+        message.success('添加达人成功');
+        reload();
+      } else {
+        message.error('添加达人失败');
+      }
+    });
   }
 
   function onDetailClose() {
@@ -153,7 +205,11 @@ const ExpertList = memo(() => {
         onClose={onModalClose}
         onSubmit={onModalSubmit}
       />
-      <Detail visible={detailVisible} data={{}} onDetailClose={onDetailClose} />
+      <Detail
+        visible={detailVisible}
+        data={detailData}
+        onDetailClose={onDetailClose}
+      />
     </div>
   );
 });

@@ -130,12 +130,13 @@ export default defineConfig({
   },
   proxy: {
     '/ocean': {
-      target: 'https://cuiguang.btdit.cn/',
+      // target: 'https://cuiguang.btdit.cn/',
       // target: 'http://cloud2.5gzvip.91tunnel.com',
+      target: 'http://cloud.vipgz4.91tunnel.com',
       changeOrigin: true,
-      // pathRewrite: {
-      //   '/ocean': '',
-      // },
+      pathRewrite: {
+        '/ocean': '',
+      },
     },
   },
 });

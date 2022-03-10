@@ -4,6 +4,7 @@ import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import Modal from './modal';
 import InfoModal from './infoModal';
+import { getTopicList } from '@/util/servers';
 
 const TopicList = memo(() => {
   const basicData = {
@@ -16,17 +17,7 @@ const TopicList = memo(() => {
     pageSize: 10,
   });
 
-  const [data, setData] = useState([
-    {
-      name: '好机会',
-      userName: '',
-      phone: 12,
-      typeName: 30,
-      startTime: '张三',
-      startTime1: '2019-9-5 21:14:14',
-      startTime2: '待审核',
-    },
-  ]);
+  const [data, setData] = useState(undefined);
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
@@ -115,8 +106,14 @@ const TopicList = memo(() => {
   ];
 
   useEffect(() => {
-    // setData(undefined);
-    const options = Object.assign({}, pages, { name: queryValue });
+    setData(undefined);
+    const options = Object.assign({}, pages, { params: { msg: queryValue } });
+    getTopicList(options).then((res) => {
+      if (res.status === 200 && res?.data?.code === 0) {
+        setData(res.data.data.records);
+        setTotal(res.data.data.total);
+      }
+    });
   }, [pages, queryValue]);
 
   function onQuery(value: string) {

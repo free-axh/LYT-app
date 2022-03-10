@@ -1,16 +1,4 @@
-import { request } from 'umi';
 import axios from 'axios';
-
-// axios.defaults.withCredentials=true
-// axios.defaults.crossDomain=true
-// axios.defaults.headers.post['Access-Control-Allow-Origin'] =
-
-// /**
-//  * 物品新增
-//  * @param {*} options
-//  * @returns
-//  */
-// export const goodsAdd = (options) => request('/goods/add', options);
 
 /**
  * 物品更新
@@ -207,5 +195,85 @@ export const getGoodsInfo = (options?: object) =>
   axios({
     method: 'post',
     url: '/ocean/objWarehouse/list',
+    data: options,
+  });
+
+/**
+ * 达人列表-列表
+ * @param options
+ * @returns
+ */
+export const getExpertList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/talent/getList',
+    data: options,
+  });
+
+/**
+ * 达人列表-添加达人
+ * @param options
+ * @returns
+ */
+export const addExpert = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/talent/add',
+    data: options,
+  });
+
+export const deleteExpert = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/talent/delete',
+    data: options,
+  });
+
+/**
+ * 上传图片
+ * @param options
+ * @returns
+ */
+export const uploadFile = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/file/upload',
+    headers: { 'Content-Type': 'multipart/form-data', userId: 'no' },
+    data: options,
+  });
+
+/**
+ * 社群管理-社群列表
+ * @param options
+ * @returns
+ */
+export const getCommunityList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/association/getList',
+    data: options,
+  });
+
+/**
+ * 社群管理-删除社群
+ * @param options
+ * @returns
+ */
+export const deleteCommunityList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/association/delete',
+    data: options,
+  });
+
+/**
+ * 话题列表-列表
+ * @param options
+ * @returns
+ */
+export const getTopicList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/communityTopic/getPageList',
     data: options,
   });
