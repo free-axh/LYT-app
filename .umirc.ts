@@ -132,11 +132,11 @@ export default defineConfig({
     '/ocean': {
       // target: 'https://cuiguang.btdit.cn/',
       // target: 'http://cloud2.5gzvip.91tunnel.com',
-      target: 'http://cloud.vipgz4.91tunnel.com',
+      target: 'http://113.125.58.228:8090',
       changeOrigin: true,
-      pathRewrite: {
-        '/ocean': '',
-      },
+      // pathRewrite: {
+      //   '/ocean': '',
+      // },
     },
   },
 });

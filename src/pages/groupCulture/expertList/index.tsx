@@ -40,14 +40,15 @@ const ExpertList = memo(() => {
       key: 'peopleType',
       align: 'center' as 'center',
       render: (t: string) => {
-        switch (t) {
-          case '0':
-            return '书法';
-          case '1':
-            return '手工';
-          case '2':
-            return '美食';
-        }
+        return t;
+        // switch (t) {
+        //   case '0':
+        //     return '书法';
+        //   case '1':
+        //     return '手工';
+        //   case '2':
+        //     return '美食';
+        // }
       },
     },
     {
@@ -210,12 +211,14 @@ const ExpertList = memo(() => {
           />
         </Tabs>
       </div>
-      <Modal
-        visible={modal}
-        title={'添加达人'}
-        onClose={onModalClose}
-        onSubmit={onModalSubmit}
-      />
+      {modal && (
+        <Modal
+          visible={modal}
+          title={'添加达人'}
+          onClose={onModalClose}
+          onSubmit={onModalSubmit}
+        />
+      )}
       <Detail
         visible={detailVisible}
         data={detailData}

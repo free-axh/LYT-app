@@ -81,6 +81,21 @@ const IModal: React.FC<IProps> = memo(
       }
     };
 
+    const beforeUpload = function (file: any) {
+      const fd = new FormData();
+      fd.append('file', file);
+      uploadFile(fd).then((res) => {
+        if (res.status === 200 && res.data && res.data.code === 0) {
+          staticData.current.url = res.data.data;
+        }
+      });
+      getBase64(file, (imageUrl: any) => {
+        setImageUrl(imageUrl);
+        setLoading(false);
+      });
+      return false;
+    };
+
     const uploadButton = (
       <div>
         {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -145,13 +160,14 @@ const IModal: React.FC<IProps> = memo(
           <Form.Item
             label="达人类型"
             name="peopleType"
-            rules={[{ required: true, message: '请选择达人类型' }]}
+            rules={[{ required: true, message: '请输入达人类型' }]}
           >
-            <Select placeholder="请选择达人类型">
+            <Input placeholder="请输入达人类型" />
+            {/* <Select placeholder="请选择达人类型">
               <Option value="0">书法</Option>
               <Option value="1">手工</Option>
               <Option value="2">美食</Option>
-            </Select>
+            </Select> */}
           </Form.Item>
           <Form.Item
             label="达人照片"
@@ -163,7 +179,8 @@ const IModal: React.FC<IProps> = memo(
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
-              onChange={handleChange}
+              // onChange={handleChange}
+              beforeUpload={beforeUpload}
               accept={'.jpg, .jpeg, .png'}
             >
               {imageUrl ? (

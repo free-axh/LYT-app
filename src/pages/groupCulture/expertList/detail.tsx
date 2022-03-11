@@ -8,16 +8,16 @@ interface IProps {
 }
 
 const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
-  const returnTypeName = (type: string) => {
-    switch (type) {
-      case '0':
-        return '书法';
-      case '1':
-        return '手工';
-      case '2':
-        return '美食';
-    }
-  };
+  // const returnTypeName = (type: string) => {
+  //   switch (type) {
+  //     case '0':
+  //       return '书法';
+  //     case '1':
+  //       return '手工';
+  //     case '2':
+  //       return '美食';
+  //   }
+  // };
 
   return (
     <Drawer
@@ -34,7 +34,7 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
         </Descriptions.Item>
         <Descriptions.Item label="达人ID">{data?.peopleId}</Descriptions.Item>
         <Descriptions.Item label="达人类型">
-          {returnTypeName(data?.peopleType)}
+          {data?.peopleType}
         </Descriptions.Item>
         <Descriptions.Item label="达人照片">
           <Image

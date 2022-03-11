@@ -154,7 +154,7 @@ const Member = memo(() => {
                   title={
                     <>
                       <a style={{ marginRight: '10px' }}>{item.userName}</a>
-                      {item.isCreate === 0 && <Tag color={'green'}>创建者</Tag>}
+                      {item.isCreate === 1 && <Tag color={'green'}>创建者</Tag>}
                     </>
                   }
                   description={
