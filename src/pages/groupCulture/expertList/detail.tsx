@@ -45,7 +45,7 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
           />
         </Descriptions.Item>
         <Descriptions.Item label="达人简介">
-          {data?.peopleInfo}
+          <div dangerouslySetInnerHTML={{ __html: data?.peopleInfo }}></div>
         </Descriptions.Item>
       </Descriptions>
     </Drawer>

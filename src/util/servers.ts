@@ -255,6 +255,18 @@ export const getCommunityList = (options?: object) =>
   });
 
 /**
+ * 社群管理-社群审核
+ * @param options
+ * @returns
+ */
+export const updateCommunityList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/association/update',
+    data: options,
+  });
+
+/**
  * 社群管理-删除社群
  * @param options
  * @returns
@@ -275,5 +287,89 @@ export const getTopicList = (options?: object) =>
   axios({
     method: 'post',
     url: '/ocean/communityTopic/getPageList',
+    data: options,
+  });
+
+/**
+ * 话题列表-删除列表
+ * @param options
+ * @returns
+ */
+export const deleteTopicList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/communityTopic/delete',
+    data: options,
+  });
+
+/**
+ * 话题列表-发起审核
+ * @param options
+ * @returns
+ */
+export const updateTopicList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/communityTopic/update',
+    data: options,
+  });
+
+/**
+ * 社群成员-列表
+ * @param options
+ * @returns
+ */
+export const getMemberList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/associationPeople/getList',
+    data: options,
+  });
+
+/**
+ * 社群成员-移除
+ * @param options
+ * @returns
+ */
+export const deleteMemberList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/associationPeople/delete',
+    data: options,
+  });
+
+/**
+ * 发布列表-查询列表
+ * @param options
+ * @returns
+ */
+export const getReleaseList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/associationPublish/getList',
+    data: options,
+  });
+
+/**
+ * 发布列表-删除列表
+ * @param options
+ * @returns
+ */
+export const deleteReleaseList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/associationPublish/delete',
+    data: options,
+  });
+
+/**
+ * 发布列表-发布审核
+ * @param options
+ * @returns
+ */
+export const updateReleaseList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/associationPublish/update',
     data: options,
   });

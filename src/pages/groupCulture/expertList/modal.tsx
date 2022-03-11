@@ -164,6 +164,7 @@ const IModal: React.FC<IProps> = memo(
               className="avatar-uploader"
               showUploadList={false}
               onChange={handleChange}
+              accept={'.jpg, .jpeg, .png'}
             >
               {imageUrl ? (
                 <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />

@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
-import { Button, Modal, Radio, Input, Form, Descriptions } from 'antd';
+import { Button, Modal, Radio, Input, Tag, Descriptions } from 'antd';
 import styles from './index.less';
+import { getDate } from '@/util/function';
 
 interface IProps {
   visible: boolean;
@@ -12,6 +13,17 @@ interface IProps {
 const IModal: React.FC<IProps> = memo(({ visible, title, onClose, data }) => {
   const handleCancel = () => {
     onClose();
+  };
+
+  const returnCheckStatus = function (status: number) {
+    switch (status) {
+      case 0:
+        return <Tag color="orange">待审核</Tag>;
+      case 1:
+        return <Tag color="green">已通过</Tag>;
+      case 2:
+        return <Tag color="red">已拒绝</Tag>;
+    }
   };
 
   return (
@@ -38,10 +50,18 @@ const IModal: React.FC<IProps> = memo(({ visible, title, onClose, data }) => {
       }
     >
       <Descriptions column={1}>
-        <Descriptions.Item label="审核时间">{data?.time}</Descriptions.Item>
-        <Descriptions.Item label="审核人">{data?.persion}</Descriptions.Item>
-        <Descriptions.Item label="审核信息">{data?.info}</Descriptions.Item>
-        <Descriptions.Item label="拒绝理由">{data?.resion}</Descriptions.Item>
+        <Descriptions.Item label="审核时间">
+          {getDate(data?.checkTime)}
+        </Descriptions.Item>
+        <Descriptions.Item label="审核人">{data?.checkName}</Descriptions.Item>
+        <Descriptions.Item label="审核信息">
+          {returnCheckStatus(data?.checkStatus)}
+        </Descriptions.Item>
+        {data?.checkStatus === 2 && (
+          <Descriptions.Item label="拒绝理由">
+            {data?.checkMsg}
+          </Descriptions.Item>
+        )}
       </Descriptions>
     </Modal>
   );

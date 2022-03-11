@@ -1,4 +1,5 @@
 export function getDate(times: number) {
+  if (!times) return;
   const date = new Date(times);
   const Y = date.getFullYear();
   const M = date.getMonth() + 1;

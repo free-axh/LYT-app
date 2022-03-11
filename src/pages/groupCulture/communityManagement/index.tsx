@@ -5,7 +5,13 @@ import Tabs from '@/components/tabs';
 import Table from '@/components/table';
 import Modal from './modal';
 import InfoModal from './infoModal';
-import { getCommunityList } from '@/util/servers';
+import {
+  getCommunityList,
+  deleteCommunityList,
+  updateCommunityList,
+} from '@/util/servers';
+import Detail from './detail';
+import { getDate } from '@/util/function';
 
 const CommunityManagement = memo(() => {
   const basicData = {
@@ -24,12 +30,10 @@ const CommunityManagement = memo(() => {
   const [current, setCurrent] = useState(1);
   const [modal, setModal] = useState(false);
   const [infoModal, setInfoModal] = useState(false);
-  const [detail, setDetail] = useState({
-    time: '2022-3-7 00:36:38',
-    persion: '张三',
-    info: '审核拒绝',
-    resion: '内容违规',
-  });
+  const [detail, setDetail] = useState();
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [detailData, setDetailData] = useState();
+  const [id, setId] = useState<number>();
 
   const columns = [
     {
@@ -49,6 +53,9 @@ const CommunityManagement = memo(() => {
       dataIndex: 'createTime',
       key: 'createTime',
       align: 'center' as 'center',
+      render: (t: number) => {
+        return getDate(t);
+      },
     },
     {
       title: '社群创建人',
@@ -64,11 +71,11 @@ const CommunityManagement = memo(() => {
       render: (t: number) => {
         switch (t) {
           case 0:
-            return '待审核';
+            return <Tag color="orange">待审核</Tag>;
           case 1:
-            return '已通过';
+            return <Tag color="green">已通过</Tag>;
           case 2:
-            return '已拒绝';
+            return <Tag color="red">已拒绝</Tag>;
         }
       },
     },
@@ -78,35 +85,58 @@ const CommunityManagement = memo(() => {
       dataIndex: 'handle',
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function onDelete(id: number) {}
+        function onDelete(id: number) {
+          deleteCommunityList({ id: record.id }).then((res) => {
+            if (res.status === 200 && res?.data?.code === 0) {
+              message.success('删除成功');
+              reload();
+            } else {
+              message.error('删除失败');
+            }
+          });
+        }
 
         function onAudit(id: number) {
           setModal(true);
+          setId(id);
         }
 
-        function onDetail(id: number) {
+        function onDetail(record: any) {
           setInfoModal(true);
+          setDetail(record);
         }
+
+        function onDetailInfo(record: any) {
+          setDetailData(record);
+          setDetailVisible(true);
+        }
+
         return (
           <Space size="middle">
-            <a>社群信息</a>
+            <a onClick={() => onDetailInfo(record)}>社群信息</a>
             <a
-              onClick={() =>
-                history.push('/groupCulture/member', {
-                  id: record.id,
-                  type: record.type,
-                })
-              }
+              onClick={() => {
+                history.push({
+                  pathname: '/groupCulture/member',
+                  query: {
+                    id: record.id,
+                    type: record.title,
+                  },
+                });
+              }}
             >
               社群成员
             </a>
             <a
-              onClick={() =>
-                history.push('/groupCulture/releaseList', {
-                  id: record.id,
-                  type: record.type,
-                })
-              }
+              onClick={() => {
+                history.push({
+                  pathname: '/groupCulture/releaseList',
+                  query: {
+                    id: record.id,
+                    type: record.title,
+                  },
+                });
+              }}
             >
               发布列表
             </a>
@@ -119,13 +149,26 @@ const CommunityManagement = memo(() => {
             {record.checkStatus === 0 ? (
               <a onClick={() => onAudit(record.id)}>审核</a>
             ) : (
-              <a onClick={() => onDetail(record.id)}>审核信息</a>
+              <a onClick={() => onDetail(record)}>审核信息</a>
             )}
           </Space>
         );
       },
     },
   ];
+
+  function reload() {
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { title: queryValue },
+    });
+    getCommunityList(options).then((res) => {
+      if (res.status === 200) {
+        setData(res?.data?.data?.records);
+        setTotal(res?.data?.data?.total);
+      }
+    });
+  }
 
   useEffect(() => {
     setData(undefined);
@@ -159,7 +202,31 @@ const CommunityManagement = memo(() => {
     setModal(false);
   }
 
-  function onModalSubmit(values: { resultFlag: string; failReason: string }) {}
+  async function onModalSubmit(values: {
+    checkStatus: string;
+    checkMsg: string;
+  }) {
+    const userData: string | null = window.sessionStorage.getItem('userData');
+    const userJson = JSON.parse(userData as string);
+    if (userJson && userJson.username) {
+      const options = {
+        id,
+        checkStatus: values.checkStatus,
+        checkMsg: values.checkMsg,
+        checkUser: userJson.username,
+        checkTime: new Date().getTime(),
+      };
+      const data = await updateCommunityList(options);
+      if (data.status === 200 && data.data.code === 0) {
+        message.success('审核完成');
+        reload();
+      } else {
+        message.error('审核失败');
+      }
+    } else {
+      message.warning('无法获取用户信息');
+    }
+  }
 
   function onInfoModalClose() {
     setInfoModal(false);
@@ -190,9 +257,14 @@ const CommunityManagement = memo(() => {
           />
           <InfoModal
             visible={infoModal}
-            title="社群审核"
+            title="审核信息"
             data={detail}
             onClose={onInfoModalClose}
+          />
+          <Detail
+            visible={detailVisible}
+            data={detailData}
+            onDetailClose={() => setDetailVisible(false)}
           />
         </Tabs>
       </div>
