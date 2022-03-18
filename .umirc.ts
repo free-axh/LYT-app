@@ -2,7 +2,8 @@ import { defineConfig } from 'umi';
 
 export default defineConfig({
   layout: {
-    name: '康田智慧服务',
+    // name: '康田智慧服务',
+    name: '',
     locale: false,
     layout: 'side',
   },

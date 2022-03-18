@@ -23,10 +23,10 @@ export const layout = ({
         history.push('/neighborhoods/thing');
       }
     },
-    // headerRender: false,
-    // footerRender: false,
-    // menuRender: false,
-    // menuHeaderRender: false,
+    headerRender: false,
+    footerRender: false,
+    menuRender: false,
+    menuHeaderRender: false,
     ...initialState?.settings,
   };
 };
@@ -44,3 +44,12 @@ document.addEventListener('UniAppJSBridgeReady', function () {
     },
   });
 });
+
+// 事件监听
+window.addEventListener('message', function (event) {
+  const { data } = event;
+  console.log('接收到公共参数', data);
+});
+//页面初始化时,向基础平台postMessage，请求获取公共参数
+console.log('发送获取公共参数请求');
+window.parent?.postMessage({ type: 'getAppConfig' }, '*');

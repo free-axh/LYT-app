@@ -36,11 +36,11 @@ const GarbageSorting = memo(() => {
             <div className={styles.render}>
               <div className={styles.number}>
                 <span>累计分类次数</span>
-                <span>98</span>
+                <span>16</span>
               </div>
               <div className={styles.integral}>
                 <span>累计赠送积分</span>
-                <span>2451</span>
+                <span>320</span>
               </div>
             </div>
           }
