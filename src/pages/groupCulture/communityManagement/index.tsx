@@ -206,14 +206,14 @@ const CommunityManagement = memo(() => {
     checkStatus: string;
     checkMsg: string;
   }) {
-    const userData: string | null = window.sessionStorage.getItem('userData');
+    const userData: string | null = window.localStorage.getItem('userData');
     const userJson = JSON.parse(userData as string);
-    if (userJson && userJson.username) {
+    if (userJson && userJson.user) {
       const options = {
         id,
         checkStatus: values.checkStatus,
         checkMsg: values.checkMsg,
-        checkUser: userJson.username,
+        checkUser: userJson.user.username,
         checkTime: new Date().getTime(),
       };
       const data = await updateCommunityList(options);

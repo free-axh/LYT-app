@@ -228,14 +228,14 @@ const TopicList = memo(() => {
     checkStatus: string;
     checkMsg: string;
   }) {
-    const userData: string | null = window.sessionStorage.getItem('userData');
+    const userData: string | null = window.localStorage.getItem('userData');
     const userJson = JSON.parse(userData as string);
-    if (userJson && userJson.username) {
+    if (userJson && userJson.user) {
       const options = {
         id,
         checkStatus: values.checkStatus,
         checkMsg: values.checkMsg,
-        checkName: userJson.username,
+        checkName: userJson.user.username,
       };
       const data = await updateTopicList(options);
       if (data.status === 200 && data.data.code === 0) {

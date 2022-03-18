@@ -127,16 +127,16 @@ const Receive = memo(() => {
     approvalStatus: string;
     approvalFailExplain: string;
   }) {
-    const userData: string | null = window.sessionStorage.getItem('userData');
+    const userData: string | null = window.localStorage.getItem('userData');
     const userJson = JSON.parse(userData as string);
-    if (userJson && userJson.username && userJson.userId) {
+    if (userJson && userJson.user) {
       const options = {
         id: modalData,
         approvalDate: getDate(new Date().getTime()),
         approvalFailExplain: values.approvalFailExplain,
         approvalStatus: values.approvalStatus,
-        approvalUser: userJson.username,
-        approvalUserId: userJson.userId,
+        approvalUser: userJson.user.username,
+        approvalUserId: userJson.user.userId,
       };
       const data = await receiveApproval(options);
       if (data.status === 200 && data.data.code === 0) {
