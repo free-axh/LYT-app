@@ -15,16 +15,15 @@ interface IProps {
 const IModal: React.FC<IProps> = memo(
   ({ visible, title, onClose, onSubmit }) => {
     const [form] = Form.useForm();
-    const [editorState, setEditorState] = useState(
-      BraftEditor.createEditorState(null),
-    );
+    const [value, setValue] = useState(null);
     const [id, setId] = useState();
 
     useEffect(() => {
       getRecipientsRules({ code: 0 }).then((res) => {
         if (res.status === 200 && res.data?.code === 0) {
           setId(res.data.data.id);
-          setEditorState(BraftEditor.createEditorState(res.data.data.msg));
+          // setEditorState(BraftEditor.createEditorState(res.data.data.msg));
+          setValue(res.data.data.msg);
         }
       });
     }, []);
@@ -41,7 +40,7 @@ const IModal: React.FC<IProps> = memo(
 
     const onFinish = () => {
       if (typeof onSubmit === 'function') {
-        updateRecipientsRules({ id, msg: editorState.toHTML() }).then((res) => {
+        updateRecipientsRules({ id, msg: value }).then((res) => {
           console.log('res', res);
           if (res.status === 200 && res.data?.code === 0) {
             message.success('编辑领用规则成功');
@@ -55,10 +54,10 @@ const IModal: React.FC<IProps> = memo(
 
     const handleEditorChange = function (editorState: any) {
       // console.log('2222222', editorState.toHTML());
-      setEditorState(editorState);
+      setValue(editorState.toHTML());
     };
 
-    console.log('editorState', editorState);
+    console.log('value', value);
 
     return (
       <Modal
@@ -93,26 +92,22 @@ const IModal: React.FC<IProps> = memo(
           </div>
         }
       >
-        <Form
+        {/* <Form
           form={form}
           autoComplete="off"
           onFinish={onFinish}
-          // labelCol={{ span: 4 }}
-          // wrapperCol={{ span: 18 }}
         >
           <Form.Item
-            // label="达人简介"
             name="msg"
-            // rules={[{ required: true, message: '请输入达人简介' }]}
-          >
-            <BraftEditor
-              placeholder="请输入达人简介"
-              style={{ border: '1px solid #d9d9d9' }}
-              value={editorState}
-              onChange={handleEditorChange}
-            />
-          </Form.Item>
-        </Form>
+          > */}
+        <BraftEditor
+          placeholder="请输入达人简介"
+          style={{ border: '1px solid #d9d9d9' }}
+          value={BraftEditor.createEditorState(value)}
+          onChange={handleEditorChange}
+        />
+        {/* </Form.Item> */}
+        {/* </Form> */}
       </Modal>
     );
   },
