@@ -63,9 +63,19 @@ export default defineConfig({
       component: '@/pages/garbageSorting/index',
       routes: [
         {
-          path: '/garbageSorting/receive',
+          path: '/garbageSorting/equipmentWarning',
+          component: '@/pages/garbageSorting/equipmentWarning/index',
+          name: '设备告警',
+        },
+        {
+          path: '/garbageSorting/equipmentList',
+          component: '@/pages/garbageSorting/equipmentList/index',
+          name: '设备列表',
+        },
+        {
+          path: '/garbageSorting/record',
           component: '@/pages/garbageSorting/record/index',
-          name: '垃圾分类记录',
+          name: '垃圾分类投放记录',
         },
       ],
     },
@@ -133,11 +143,11 @@ export default defineConfig({
     '/ocean': {
       // target: 'https://cuiguang.btdit.cn/',
       // target: 'http://cloud2.5gzvip.91tunnel.com',
-      target: 'http://113.125.58.228:8090',
+      target: 'http://cloud.vipgz4.91tunnel.com',
       changeOrigin: true,
-      // pathRewrite: {
-      //   '/ocean': '',
-      // },
+      pathRewrite: {
+        '/ocean': '',
+      },
     },
   },
 });

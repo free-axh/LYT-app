@@ -1,8 +1,8 @@
 import { memo, useEffect, useState, useRef } from 'react';
 import Table from '@/components/table';
-import { getRecordList } from '@/util/servers';
+import { getEquipmentList } from '@/util/servers';
 
-const Receive = memo(() => {
+const EquipmentList = memo(() => {
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -14,45 +14,51 @@ const Receive = memo(() => {
 
   const columns = [
     {
-      title: '投放设备',
+      title: '设备名称',
       dataIndex: 'deviceName',
       key: 'deviceName',
       align: 'center' as 'center',
     },
     {
-      title: '投放时间',
-      dataIndex: 'rubbishTime',
-      key: 'rubbishTime',
+      title: '所在小区',
+      dataIndex: 'communityName',
+      key: 'communityName',
       align: 'center' as 'center',
     },
     {
-      title: '投放人',
-      dataIndex: 'userName',
-      key: 'userName',
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
       align: 'center' as 'center',
     },
     {
-      title: '用户ID',
-      key: 'userId',
-      dataIndex: 'userId',
+      title: '主板编码',
+      key: 'deviceCode',
+      dataIndex: 'deviceCode',
       align: 'center' as 'center',
     },
     {
-      title: '投放重量',
-      key: 'rubbishWeight',
-      dataIndex: 'rubbishWeight',
+      title: '设备位置',
+      key: 'deviceLocation',
+      dataIndex: 'deviceLocation',
       align: 'center' as 'center',
     },
     {
-      title: '垃圾类型',
-      key: 'rubbishType',
-      dataIndex: 'rubbishType',
+      title: '设备ID',
+      key: 'deviceId',
+      dataIndex: 'deviceId',
       align: 'center' as 'center',
     },
     {
-      title: '获取积分',
-      key: 'score',
-      dataIndex: 'score',
+      title: '设备类型ID',
+      key: 'deviceTypeId',
+      dataIndex: 'deviceTypeId',
+      align: 'center' as 'center',
+    },
+    {
+      title: '设备类型名称',
+      key: 'deviceTypeName',
+      dataIndex: 'deviceTypeName',
       align: 'center' as 'center',
     },
   ];
@@ -62,7 +68,7 @@ const Receive = memo(() => {
     const options = Object.assign({}, pages, {
       params: { deviceName: queryValue },
     });
-    getRecordList(options).then((data) => {
+    getEquipmentList(options).then((data) => {
       if (data.status === 200) {
         setData(data?.data?.data?.records);
         setTotal(data?.data?.data?.total);
@@ -100,4 +106,4 @@ const Receive = memo(() => {
   );
 });
 
-export default Receive;
+export default EquipmentList;

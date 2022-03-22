@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
-import { Space, Tag, message } from 'antd';
+import { Space, Tag, message, Button } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 import Table from '@/components/table';
 import {
   receiveList,
@@ -9,6 +10,7 @@ import {
 } from '@/util/servers';
 import Detail from './detail';
 import Modal from './modal';
+import RuleModal from './ruleModal';
 import { getDate } from '@/util/function';
 
 const Receive = memo(() => {
@@ -25,6 +27,7 @@ const Receive = memo(() => {
   const [total, setTotal] = useState(0);
   const [queryValue, setQueryValue] = useState('');
   const [current, setCurrent] = useState(1);
+  const [ruleModal, setRuleModal] = useState(false);
 
   const columns = [
     {
@@ -181,6 +184,18 @@ const Receive = memo(() => {
     setCurrent(1);
   }
 
+  function onEdit() {
+    setRuleModal(true);
+  }
+
+  function onRuleModalClose() {
+    setRuleModal(false);
+  }
+
+  function onRuleModalSubmit() {
+    setRuleModal(false);
+  }
+
   return (
     <>
       <Table
@@ -191,6 +206,11 @@ const Receive = memo(() => {
         total={total}
         onPageChange={onPageChange}
         onQuery={onQuery}
+        searchRender={
+          <Button onClick={onEdit} type="primary" icon={<EditOutlined />}>
+            编辑领用规则
+          </Button>
+        }
       />
       ;
       <Detail
@@ -204,6 +224,14 @@ const Receive = memo(() => {
           title="工单审核"
           onClose={onModalClose}
           onSubmit={onModalSubmit}
+        />
+      )}
+      {ruleModal && (
+        <RuleModal
+          visible={ruleModal}
+          title="编辑领用规则"
+          onClose={onRuleModalClose}
+          onSubmit={onRuleModalSubmit}
         />
       )}
     </>

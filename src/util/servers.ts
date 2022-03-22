@@ -163,6 +163,30 @@ export const receiveApproval = (options?: object) =>
   });
 
 /**
+ * 领用工单 - 获取物品领用规则
+ * @param {*} options
+ * @returns
+ */
+export const getRecipientsRules = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/objLengMsg/getList',
+    data: options,
+  });
+
+/**
+ * 领用工单 - 获取物品领用规则
+ * @param {*} options
+ * @returns
+ */
+export const updateRecipientsRules = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/objLengMsg/update',
+    data: options,
+  });
+
+/**
  * 违停登记 - 列表
  * @param {*} options
  * @returns
@@ -371,5 +395,65 @@ export const updateReleaseList = (options?: object) =>
   axios({
     method: 'post',
     url: '/ocean/associationPublish/update',
+    data: options,
+  });
+
+/**
+ * 设备告警-列表查询
+ * @param options
+ * @returns
+ */
+export const getEquipmentWarningList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/rubbishDeviceAlarm/getList',
+    data: options,
+  });
+
+/**
+ * 设备列表-列表查询
+ * @param options
+ * @returns
+ */
+export const getEquipmentList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/rubbishDevice/getList',
+    data: options,
+  });
+
+/**
+ * 投放记录-列表查询
+ * @param options
+ * @returns
+ */
+export const getRecordList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/rubbishClassification/getList',
+    data: options,
+  });
+
+/**
+ * 垃圾分类-累计分类次数
+ * @param options
+ * @returns
+ */
+export const getCount = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/rubbishClassification/getCount',
+    data: options,
+  });
+
+/**
+ * 垃圾分类-累计赠送积分
+ * @param options
+ * @returns
+ */
+export const getTotalScore = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/rubbishClassification/getTotalScore',
     data: options,
   });
