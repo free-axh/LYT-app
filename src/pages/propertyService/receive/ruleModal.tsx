@@ -14,7 +14,7 @@ interface IProps {
 
 const IModal: React.FC<IProps> = memo(
   ({ visible, title, onClose, onSubmit }) => {
-    const [form] = Form.useForm();
+    // const [form] = Form.useForm();
     const [value, setValue] = useState(null);
     const [id, setId] = useState();
 
@@ -28,16 +28,7 @@ const IModal: React.FC<IProps> = memo(
     }, []);
 
     const handleOk = () => {
-      form.submit();
-    };
-
-    const handleCancel = () => {
-      if (typeof onClose === 'function') {
-        onClose();
-      }
-    };
-
-    const onFinish = () => {
+      // form.submit();
       if (typeof onSubmit === 'function') {
         updateRecipientsRules({ id, msg: value }).then((res) => {
           if (res.status === 200 && res.data?.code === 0) {
@@ -49,6 +40,25 @@ const IModal: React.FC<IProps> = memo(
         });
       }
     };
+
+    const handleCancel = () => {
+      if (typeof onClose === 'function') {
+        onClose();
+      }
+    };
+
+    // const onFinish = () => {
+    //   if (typeof onSubmit === 'function') {
+    //     updateRecipientsRules({ id, msg: value }).then((res) => {
+    //       if (res.status === 200 && res.data?.code === 0) {
+    //         message.success('编辑领用规则成功');
+    //         onSubmit();
+    //       } else {
+    //         message.error('编辑领用规则失败');
+    //       }
+    //     });
+    //   }
+    // };
 
     const handleEditorChange = function (editorState: any) {
       setValue(editorState.toHTML());
@@ -87,16 +97,16 @@ const IModal: React.FC<IProps> = memo(
           </div>
         }
       >
-        <Form form={form} autoComplete="off" onFinish={onFinish}>
-          <Form.Item name="msg">
-            <BraftEditor
-              placeholder="请输入达人简介"
-              style={{ border: '1px solid #d9d9d9' }}
-              value={BraftEditor.createEditorState(value)}
-              onChange={handleEditorChange}
-            />
-          </Form.Item>
-        </Form>
+        {/* <Form form={form} autoComplete="off" onFinish={onFinish}> */}
+        {/* <Form.Item name="msg"> */}
+        <BraftEditor
+          placeholder="请输入达人简介"
+          style={{ border: '1px solid #d9d9d9' }}
+          value={BraftEditor.createEditorState(value)}
+          onChange={handleEditorChange}
+        />
+        {/* </Form.Item> */}
+        {/* </Form> */}
       </Modal>
     );
   },
