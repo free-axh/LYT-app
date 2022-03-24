@@ -100,7 +100,7 @@ const IModal: React.FC<IProps> = memo(
         {/* <Form form={form} autoComplete="off" onFinish={onFinish}> */}
         {/* <Form.Item name="msg"> */}
         <BraftEditor
-          placeholder="请输入达人简介"
+          placeholder="请输入领用规则"
           style={{ border: '1px solid #d9d9d9' }}
           value={BraftEditor.createEditorState(value)}
           onChange={handleEditorChange}
