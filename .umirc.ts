@@ -44,6 +44,34 @@ export default defineConfig({
       ],
     },
     {
+      name: '健康养老',
+      icon: 'team',
+      path: '/health',
+      component: '@/pages/health/index',
+      routes: [
+        {
+          path: '/health/dailyDiet',
+          component: '@/pages/health/dailyDiet/index',
+          name: '每日食谱',
+        },
+        {
+          path: '/health/goodsList',
+          component: '@/pages/health/goodsList/index',
+          name: '商品列表',
+        },
+        {
+          name: '分类管理',
+          path: '/health/sortManagement',
+          component: '@/pages/health/sortManagement/index',
+        },
+        {
+          path: '/health/orderManagement',
+          component: '@/pages/health/orderManagement/index',
+          name: '订单管理',
+        },
+      ],
+    },
+    {
       name: '物业服务',
       icon: 'home',
       path: '/propertyService',
