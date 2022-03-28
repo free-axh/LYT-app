@@ -5,7 +5,7 @@ import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import RecipeModal from './recipeModal';
 import Detail from './detail';
-import { getRecipeList } from '@/util/servers';
+import { getRecipeList, addRecipeList } from '@/util/servers';
 
 const DailyDiet = memo(() => {
   const [data, setData] = useState(undefined);
@@ -112,6 +112,10 @@ const DailyDiet = memo(() => {
     setRecipeModalFlag(false);
   }
 
+  function onRecipeModalSubmit(values: any) {
+    addRecipeList(values).then((res) => {});
+  }
+
   function onDetailClose() {
     setDetailVisible(false);
   }
@@ -137,6 +141,7 @@ const DailyDiet = memo(() => {
           visible={recipeModalFlag}
           title="新增食谱"
           onClose={onRecipeModalClose}
+          onSubmit={onRecipeModalSubmit}
         />
       )}
       <Detail

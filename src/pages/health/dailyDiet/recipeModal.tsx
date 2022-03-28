@@ -8,6 +8,7 @@ import {
   Upload,
   Select,
   Tooltip,
+  message,
 } from 'antd';
 import BraftEditor from 'braft-editor';
 import {
@@ -39,6 +40,7 @@ const IModal: React.FC<IProps> = memo(
     const staticData = useRef({
       url: null,
     });
+    const [fileList, setFileList] = useState<any>({});
 
     const handleOk = () => {
       form.submit();
@@ -50,65 +52,67 @@ const IModal: React.FC<IProps> = memo(
       }
     };
 
-    const onFinish = (values: any) => {
+    const onFinish = async (values: any) => {
       console.log(1111111, values);
-      // const options = Object.assign({}, values, {
-      //   peoplePhoto: staticData.current.url,
-      //   peopleInfo: editorState.toHTML(),
-      // });
-      // if (typeof onSubmit === 'function') {
-      //   onSubmit(options);
-      // }
-    };
-
-    const handleEditorChange = function (editorState: any) {
-      // console.log('2222222', editorState.toHTML());
-      setEditorState(editorState);
-    };
-
-    function getBase64(img: Blob, callback: Function) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => callback(reader.result));
-      reader.readAsDataURL(img);
-    }
-
-    /**
-     * 上传图片改变事件
-     */
-    const handleChange = function (info: any) {
-      if (info.file.status === 'uploading') {
-        setLoading(true);
-        return;
-      }
-      if (info.file.status === 'done') {
-        const fd = new FormData();
-        fd.append('file', info.file.originFileObj);
-        uploadFile(fd).then((res) => {
-          if (res.status === 200 && res.data && res.data.code === 0) {
-            staticData.current.url = res.data.data;
+      let data: any = {};
+      data.putawayTime = values.putawayTime.format('YYYY-MM-DD');
+      const foods = [];
+      if (values.foodType0) {
+        let list = values.foodType0;
+        for (let i = 0; i < list.length; i += 1) {
+          const food: any = {
+            foodMaterials: list[i].foodMaterials,
+            foodName: list[i].foodName,
+            cookWay: list[i].cookWay.toHTML(),
+            foodType: 0,
+          };
+          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+            const picture = list[i].picture.fileList[j];
+            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
           }
-        });
-
-        getBase64(info.file.originFileObj, (imageUrl: any) => {
-          setImageUrl(imageUrl);
-          setLoading(false);
-        });
-      }
-    };
-
-    const beforeUpload = function (file: any) {
-      const fd = new FormData();
-      fd.append('file', file);
-      uploadFile(fd).then((res) => {
-        if (res.status === 200 && res.data && res.data.code === 0) {
-          staticData.current.url = res.data.data;
+          foods.push(food);
         }
-      });
-      getBase64(file, (imageUrl: any) => {
-        setImageUrl(imageUrl);
-        setLoading(false);
-      });
-      return false;
+      }
+
+      if (values.foodType1) {
+        let list = values.foodType1;
+        for (let i = 0; i < list.length; i += 1) {
+          const food: any = {
+            foodMaterials: list[i].foodMaterials,
+            foodName: list[i].foodName,
+            cookWay: list[i].cookWay.toHTML(),
+            foodType: 0,
+          };
+          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+            const picture = list[i].picture.fileList[j];
+            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
+          }
+          foods.push(food);
+        }
+      }
+
+      if (values.foodType2) {
+        let list = values.foodType2;
+        for (let i = 0; i < list.length; i += 1) {
+          const food: any = {
+            foodMaterials: list[i].foodMaterials,
+            foodName: list[i].foodName,
+            cookWay: list[i].cookWay.toHTML(),
+            foodType: 0,
+          };
+          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+            const picture = list[i].picture.fileList[j];
+            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
+          }
+          foods.push(food);
+        }
+      }
+
+      data.food = foods;
+      console.log('data', data);
+      if (typeof onSubmit === 'function') {
+        onSubmit(data);
+      }
     };
 
     const uploadButton = (
@@ -117,6 +121,8 @@ const IModal: React.FC<IProps> = memo(
         <div style={{ marginTop: 8 }}>添加图片</div>
       </div>
     );
+
+    console.log('files', fileList);
 
     return (
       <Modal
@@ -215,25 +221,15 @@ const IModal: React.FC<IProps> = memo(
                       extra="最多添加三张图片"
                     >
                       <Upload
-                        name="avatar"
+                        action={'/ocean/file/upload'}
+                        name="file"
                         style={{ background: '#ffffff' }}
                         listType="picture-card"
                         className="avatar-uploader"
-                        showUploadList={false}
-                        // onChange={handleChange}
-                        beforeUpload={beforeUpload}
-                        accept={'.jpg, .jpeg, .png'}
                         maxCount={3}
+                        accept={'.jpg, .jpeg, .png'}
                       >
-                        {/* {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt="avatar"
-                            style={{ width: '100%' }}
-                          />
-                        ) : ( */}
                         {uploadButton}
-                        {/* )} */}
                       </Upload>
                     </Form.Item>
                     <Form.Item
@@ -260,7 +256,6 @@ const IModal: React.FC<IProps> = memo(
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
                         value={editorState}
-                        onChange={handleEditorChange}
                       />
                     </Form.Item>
                   </div>
@@ -318,23 +313,15 @@ const IModal: React.FC<IProps> = memo(
                       extra="最多添加三张图片"
                     >
                       <Upload
-                        name="avatar"
+                        action={'/ocean/file/upload'}
+                        name="file"
+                        style={{ background: '#ffffff' }}
                         listType="picture-card"
                         className="avatar-uploader"
-                        showUploadList={false}
-                        // onChange={handleChange}
-                        beforeUpload={beforeUpload}
+                        maxCount={3}
                         accept={'.jpg, .jpeg, .png'}
                       >
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt="avatar"
-                            style={{ width: '100%' }}
-                          />
-                        ) : (
-                          uploadButton
-                        )}
+                        {uploadButton}
                       </Upload>
                     </Form.Item>
                     <Form.Item
@@ -361,7 +348,6 @@ const IModal: React.FC<IProps> = memo(
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
                         value={editorState}
-                        onChange={handleEditorChange}
                       />
                     </Form.Item>
                   </div>
@@ -369,7 +355,7 @@ const IModal: React.FC<IProps> = memo(
               </>
             )}
           </Form.List>
-          <Form.List name="foodType3">
+          <Form.List name="foodType2">
             {(fields, { add, remove }) => (
               <>
                 <Form.Item label="添加晚餐">
@@ -419,23 +405,15 @@ const IModal: React.FC<IProps> = memo(
                       extra="最多添加三张图片"
                     >
                       <Upload
-                        name="avatar"
+                        action={'/ocean/file/upload'}
+                        name="file"
+                        style={{ background: '#ffffff' }}
                         listType="picture-card"
                         className="avatar-uploader"
-                        showUploadList={false}
-                        // onChange={handleChange}
-                        beforeUpload={beforeUpload}
+                        maxCount={3}
                         accept={'.jpg, .jpeg, .png'}
                       >
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt="avatar"
-                            style={{ width: '100%' }}
-                          />
-                        ) : (
-                          uploadButton
-                        )}
+                        {uploadButton}
                       </Upload>
                     </Form.Item>
                     <Form.Item
@@ -462,7 +440,6 @@ const IModal: React.FC<IProps> = memo(
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
                         value={editorState}
-                        onChange={handleEditorChange}
                       />
                     </Form.Item>
                   </div>

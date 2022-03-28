@@ -82,6 +82,7 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const beforeUpload = function (file: any) {
+      console.log('file', file);
       const fd = new FormData();
       fd.append('file', file);
       uploadFile(fd).then((res) => {
