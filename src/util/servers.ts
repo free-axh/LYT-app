@@ -457,3 +457,27 @@ export const getTotalScore = (options?: object) =>
     url: '/ocean/rubbishClassification/getTotalScore',
     data: options,
   });
+
+/**
+ * 每日食谱-列表查询
+ * @param options
+ * @returns
+ */
+export const getRecipeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/food/getGroupList',
+    data: options,
+  });
+
+/**
+ * 每日食谱-新增食谱
+ * @param options
+ * @returns
+ */
+export const addRecipeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/food/add',
+    data: options,
+  });

@@ -51,13 +51,14 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const onFinish = (values: any) => {
-      const options = Object.assign({}, values, {
-        peoplePhoto: staticData.current.url,
-        peopleInfo: editorState.toHTML(),
-      });
-      if (typeof onSubmit === 'function') {
-        onSubmit(options);
-      }
+      console.log(1111111, values);
+      // const options = Object.assign({}, values, {
+      //   peoplePhoto: staticData.current.url,
+      //   peopleInfo: editorState.toHTML(),
+      // });
+      // if (typeof onSubmit === 'function') {
+      //   onSubmit(options);
+      // }
     };
 
     const handleEditorChange = function (editorState: any) {
@@ -159,12 +160,12 @@ const IModal: React.FC<IProps> = memo(
         >
           <Form.Item
             label="添加日期"
-            name="date"
+            name="putawayTime"
             rules={[{ required: true, message: '请选择日期' }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
           </Form.Item>
-          <Form.List name="moring">
+          <Form.List name="foodType0">
             {(fields, { add, remove }) => (
               <>
                 <Form.Item label="添加早餐">
@@ -194,7 +195,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodName']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -206,7 +207,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="图片"
-                      name={[name, 'last']}
+                      name={[name, 'picture']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -222,22 +223,23 @@ const IModal: React.FC<IProps> = memo(
                         // onChange={handleChange}
                         beforeUpload={beforeUpload}
                         accept={'.jpg, .jpeg, .png'}
+                        maxCount={3}
                       >
-                        {imageUrl ? (
+                        {/* {imageUrl ? (
                           <img
                             src={imageUrl}
                             alt="avatar"
                             style={{ width: '100%' }}
                           />
-                        ) : (
-                          uploadButton
-                        )}
+                        ) : ( */}
+                        {uploadButton}
+                        {/* )} */}
                       </Upload>
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       label="食材名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodMaterials']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -247,7 +249,7 @@ const IModal: React.FC<IProps> = memo(
                     </Form.Item>
                     <Form.Item
                       label="烹饪方式"
-                      name="peopleInfo"
+                      name={[name, 'cookWay']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -266,7 +268,7 @@ const IModal: React.FC<IProps> = memo(
               </>
             )}
           </Form.List>
-          <Form.List name="noon">
+          <Form.List name="foodType1">
             {(fields, { add, remove }) => (
               <>
                 <Form.Item label="添加午餐">
@@ -296,7 +298,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodName']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -308,7 +310,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="图片"
-                      name={[name, 'last']}
+                      name={[name, 'picture']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -338,7 +340,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="食材名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodMaterials']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -348,7 +350,7 @@ const IModal: React.FC<IProps> = memo(
                     </Form.Item>
                     <Form.Item
                       label="烹饪方式"
-                      name="peopleInfo"
+                      name={[name, 'cookWay']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -367,7 +369,7 @@ const IModal: React.FC<IProps> = memo(
               </>
             )}
           </Form.List>
-          <Form.List name="night">
+          <Form.List name="foodType3">
             {(fields, { add, remove }) => (
               <>
                 <Form.Item label="添加晚餐">
@@ -397,7 +399,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodName']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -409,7 +411,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="图片"
-                      name={[name, 'last']}
+                      name={[name, 'picture']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -439,7 +441,7 @@ const IModal: React.FC<IProps> = memo(
                     <Form.Item
                       {...restField}
                       label="食材名称"
-                      name={[name, 'first']}
+                      name={[name, 'foodMaterials']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}
@@ -449,7 +451,7 @@ const IModal: React.FC<IProps> = memo(
                     </Form.Item>
                     <Form.Item
                       label="烹饪方式"
-                      name="peopleInfo"
+                      name={[name, 'cookWay']}
                       labelAlign={'left'}
                       labelCol={{ span: 3, offset: 4 }}
                       wrapperCol={{ span: 15 }}

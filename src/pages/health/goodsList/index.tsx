@@ -3,8 +3,7 @@ import { Space, Tag, message, Popconfirm, Button } from 'antd';
 import Table from '@/components/table';
 import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
-// import SortModal from './sortModal';
-// import Detail from './detail';
+import GoodsModal from './addGoodsModal';
 
 export default memo(() => {
   const [data, setData] = useState(undefined);
@@ -117,7 +116,7 @@ export default memo(() => {
     setCurrent(page);
   }
 
-  function addSort() {
+  function addGoods() {
     setModalFlag(true);
   }
 
@@ -127,6 +126,14 @@ export default memo(() => {
 
   function onDetailClose() {
     setDetailVisible(false);
+  }
+
+  function onModalClose() {
+    setModalFlag(false);
+  }
+
+  function onModalSubmit() {
+    setModalFlag(true);
   }
 
   return (
@@ -139,7 +146,20 @@ export default memo(() => {
         current={current}
         onQuery={onQuery}
         onPageChange={onPageChange}
+        searchRender={
+          <Button onClick={addGoods} type="primary" icon={<PlusOutlined />}>
+            添加商品
+          </Button>
+        }
       />
+      {modalFlag && (
+        <GoodsModal
+          visible={modalFlag}
+          title={'添加商品'}
+          onClose={onModalClose}
+          onSubmit={onModalSubmit}
+        />
+      )}
       {/* <Detail
         visible={detailVisible}
         onDetailClose={onDetailClose}

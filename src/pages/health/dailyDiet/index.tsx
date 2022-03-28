@@ -5,6 +5,7 @@ import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import RecipeModal from './recipeModal';
 import Detail from './detail';
+import { getRecipeList } from '@/util/servers';
 
 const DailyDiet = memo(() => {
   const [data, setData] = useState(undefined);
@@ -24,15 +25,18 @@ const DailyDiet = memo(() => {
   const columns = [
     {
       title: '食谱日期',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'putawayTime',
+      key: 'putawayTime',
       align: 'center' as 'center',
     },
     {
       title: '添加时间',
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'createTime',
+      key: 'createTime',
       align: 'center' as 'center',
+      render: (t: number) => {
+        return getDate(t);
+      },
     },
     {
       title: '操作',
@@ -41,15 +45,15 @@ const DailyDiet = memo(() => {
       width: 400,
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function detailHandle(id) {
+        function detailHandle(id: number) {
           setDetailVisible(true);
         }
 
-        function editHandle(r) {
+        function editHandle(r: object) {
           setRecipeModalFlag(true);
         }
 
-        function onDelete(id) {}
+        function onDelete(id: number) {}
         return (
           <Space size="middle">
             <a onClick={() => detailHandle(record.id)}>详情</a>
@@ -67,12 +71,16 @@ const DailyDiet = memo(() => {
   ];
 
   useEffect(() => {
-    setData([
-      {
-        name: '2022-1-8',
-        userName: '2019-9-5 21:14:14',
-      },
-    ]);
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { foodName: queryValue },
+    });
+    getRecipeList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
   }, [pages]);
 
   function reload() {
