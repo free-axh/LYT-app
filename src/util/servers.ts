@@ -541,3 +541,51 @@ export const getGoodsTypeList = (options?: object) =>
     url: '/ocean/foodType/getList',
     data: options,
   });
+
+/**
+ * 商品列表-商品新增
+ * @param options
+ * @returns
+ */
+export const addGoodsTypeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/add',
+    data: options,
+  });
+
+/**
+ * 商品列表-删除商品
+ * @param options
+ * @returns
+ */
+export const deleteGoodsTypeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/delete',
+    data: options,
+  });
+
+/**
+ * 商品列表-删除商品
+ * @param options
+ * @returns
+ */
+export const updatePutaway = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/updatePutaway',
+    data: options,
+  });
+
+/**
+ * 商品列表-删除商品
+ * @param options
+ * @returns
+ */
+export const detailGoodsTypeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/getById',
+    data: options,
+  });

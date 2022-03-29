@@ -4,12 +4,20 @@ import Table from '@/components/table';
 import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import GoodsModal from './addGoodsModal';
-import { getFoodGoodsList } from '@/util/servers';
+import {
+  getFoodGoodsList,
+  addGoodsTypeList,
+  deleteGoodsTypeList,
+  updatePutaway,
+  detailGoodsTypeList,
+} from '@/util/servers';
+import Detail from './detail';
 
 export default memo(() => {
   const [data, setData] = useState(undefined);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [detailId, setDetailId] = useState();
   const [modalFlag, setModalFlag] = useState(false);
   const [modalId, setModalId] = useState(null);
   const [pages, setPages] = useState({
@@ -74,17 +82,42 @@ export default memo(() => {
       width: 400,
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function detailHandle(r) {
-          setDetailVisible(true);
+        function detailHandle(r: any) {
+          detailGoodsTypeList({ id: r.id }).then((res) => {
+            if (res.status === 200 && res?.data && res?.data.code === 0) {
+              setDetailVisible(true);
+              setDetailData(res.data.data);
+            }
+          });
         }
 
-        function onDelete(id) {}
+        function onDelete(id: number) {
+          console.log(1111111112);
+          deleteGoodsTypeList({ id }).then((res) => {
+            if (res.status === 200 && res?.data && res?.data.code === 0) {
+              message.success('删除成功');
+              reload();
+            } else {
+              message.error('删除失败');
+            }
+          });
+        }
+
+        function onUpdatePutaway(r: any) {
+          updatePutaway({ id: r.id, putaway: r.putaway === 0 ? 1 : 0 }).then(
+            () => {
+              reload();
+            },
+          );
+        }
 
         return (
           <Space size="middle">
             <a onClick={() => detailHandle(record)}>详情</a>
             <a>编辑</a>
-            <a>下架</a>
+            <a onClick={() => onUpdatePutaway(record)}>
+              {record.putaway === 0 ? '下架' : '上架'}
+            </a>
             <Popconfirm
               title="是否确定删除?"
               onConfirm={() => onDelete(record.id)}
@@ -112,6 +145,15 @@ export default memo(() => {
 
   function reload() {
     setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { foodName: queryValue },
+    });
+    getFoodGoodsList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
   }
 
   function onQuery(value: string) {
@@ -147,8 +189,16 @@ export default memo(() => {
     setModalFlag(false);
   }
 
-  function onModalSubmit() {
-    setModalFlag(true);
+  function onModalSubmit(values: any) {
+    addGoodsTypeList(values).then((res) => {
+      if (res.status === 200 && res?.data && res?.data.code === 0) {
+        message.success('添加商品成功');
+        reload();
+      } else {
+        message.error('添加商品失败');
+      }
+      setModalFlag(false);
+    });
   }
 
   return (
@@ -175,11 +225,11 @@ export default memo(() => {
           onSubmit={onModalSubmit}
         />
       )}
-      {/* <Detail
+      <Detail
         visible={detailVisible}
         onDetailClose={onDetailClose}
-        data={null}
-      /> */}
+        data={detailData}
+      />
     </>
   );
 });

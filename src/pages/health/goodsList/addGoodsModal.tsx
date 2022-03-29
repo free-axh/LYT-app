@@ -42,6 +42,9 @@ const IModal: React.FC<IProps> = memo(
       'weight',
       'price',
     ]);
+    const staticData = useRef({
+      tableData: null,
+    });
 
     useEffect(() => {
       getGoodsTypeList({ pageNo: 1, pageSize: 999 }).then((res) => {
@@ -49,7 +52,7 @@ const IModal: React.FC<IProps> = memo(
           setTypeList(res.data.data);
         }
       });
-    });
+    }, []);
 
     const handleOk = () => {
       form.submit();
@@ -63,9 +66,22 @@ const IModal: React.FC<IProps> = memo(
 
     const onFinish = (values: any) => {
       console.log('value', values);
-      // if (typeof onSubmit === 'function') {
-      //   onSubmit(options);
-      // }
+
+      const data: any = {
+        foodTypeId: values.foodTypeId,
+        foodName: values.foodName,
+        specificationType: values.specificationType,
+        foodMsg: values.foodMsg.toHTML(),
+        putaway: values.putaway,
+        specificationList: staticData.current.tableData,
+      };
+      for (let i = 0; i < values.picture.fileList.length; i += 1) {
+        data[`picture${i + 1}`] = values.picture.fileList[i].response.data;
+      }
+      console.log('11111111', data);
+      if (typeof onSubmit === 'function') {
+        onSubmit(data);
+      }
     };
 
     const uploadButton = (
@@ -104,6 +120,10 @@ const IModal: React.FC<IProps> = memo(
 
     function onChange(e: any) {
       setSpecificationType(e.target.value);
+    }
+
+    function onEditableTableChange(values: any) {
+      staticData.current.tableData = values;
     }
 
     return (
@@ -145,10 +165,14 @@ const IModal: React.FC<IProps> = memo(
           onFinish={onFinish}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 18 }}
+          initialValues={{
+            specificationType: '0',
+            putaway: '0',
+          }}
         >
           <Form.Item
             label="商品类别"
-            name="date"
+            name="foodTypeId"
             rules={[{ required: true, message: '请选择商品类别' }]}
           >
             <Select placeholder="请选择商品类别">
@@ -164,7 +188,11 @@ const IModal: React.FC<IProps> = memo(
           >
             <Input placeholder="请输入商品名称" />
           </Form.Item>
-          <Form.Item label="商品规格" name="specificationType">
+          <Form.Item
+            label="商品规格"
+            name="specificationType"
+            rules={[{ required: true, message: '请选择商品规格' }]}
+          >
             <Radio.Group onChange={onChange}>
               <Radio value="0">单规格</Radio>
               <Radio value="1">多规格</Radio>
@@ -175,6 +203,7 @@ const IModal: React.FC<IProps> = memo(
               type={specificationType}
               columns={columns}
               columnsKeys={columnsKeys}
+              onChange={onEditableTableChange}
             />
           </Form.Item>
           <Form.Item

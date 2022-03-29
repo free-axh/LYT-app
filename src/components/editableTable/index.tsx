@@ -108,9 +108,9 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 type EditableTableProps = {
   columns: any;
-  dataSource?: any;
   type?: string | number;
   columnsKeys: Array<any>;
+  onChange?: Function;
 };
 
 interface DataType {
@@ -123,7 +123,7 @@ interface DataType {
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const EditableTable: React.FC<EditableTableProps> = memo(
-  ({ columns, dataSource, type, columnsKeys }) => {
+  ({ columns, type, columnsKeys, onChange }) => {
     const [data, setData] = useState<Array<any>>([]);
     const [columnsData, setColumnsData] = useState<Array<any>>([]);
 
@@ -137,7 +137,11 @@ const EditableTable: React.FC<EditableTableProps> = memo(
       }
     }, [columnsKeys]);
 
-    function onDelete() {}
+    function onDelete(index: number) {
+      const newData = [...data];
+      newData.splice(index, 1);
+      setData(newData);
+    }
 
     useEffect(() => {
       if (columns) {
@@ -145,10 +149,13 @@ const EditableTable: React.FC<EditableTableProps> = memo(
           title: '操作',
           dataIndex: 'handle',
           width: '15%',
-          render: (_, record: { key: React.Key }) => {
-            return <a onClick={onDelete}>删除</a>;
+          render: (t, record: { key: React.Key }, index: number) => {
+            return index === 0 ? null : (
+              <a onClick={() => onDelete(index)}>删除</a>
+            );
           },
         });
+        setColumnsData(columns);
       }
     }, [columns]);
 
@@ -163,6 +170,9 @@ const EditableTable: React.FC<EditableTableProps> = memo(
       });
       console.log('newData', newData);
       setData(newData);
+      if (typeof onChange === 'function') {
+        onChange(newData);
+      }
     };
 
     const components = {
@@ -171,7 +181,7 @@ const EditableTable: React.FC<EditableTableProps> = memo(
         cell: EditableCell,
       },
     };
-    const newColumns = columns.map((col: any) => {
+    const newColumns = columnsData.map((col: any) => {
       if (!col.editable) {
         return col;
       }
@@ -187,8 +197,15 @@ const EditableTable: React.FC<EditableTableProps> = memo(
       };
     });
 
-    function handleAdd() {}
-
+    function handleAdd() {
+      const d: any = {};
+      const newData = [...data];
+      for (let i = 0; i < columnsKeys.length; i += 1) {
+        d[columnsKeys[i]] = '';
+      }
+      newData.push(d);
+      setData(newData);
+    }
     return (
       <div>
         {(type === 1 || type === '1') && (
