@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Modal,
@@ -17,6 +17,7 @@ import {
   MinusCircleOutlined,
 } from '@ant-design/icons';
 import 'braft-editor/dist/index.css';
+import moment from 'moment';
 import styles from './index.less';
 import { uploadFile } from '@/util/servers';
 
@@ -26,21 +27,143 @@ interface IProps {
   title: string;
   onClose?: Function;
   onSubmit?: Function;
-  data?: object;
+  data?: Array<any> | null | undefined;
 }
 
 const IModal: React.FC<IProps> = memo(
-  ({ visible, title, onClose, onSubmit }) => {
+  ({ visible, title, onClose, onSubmit, data }) => {
     const [form] = Form.useForm();
-    const [editorState, setEditorState] = useState(
-      BraftEditor.createEditorState(null),
-    );
-    const [imageUrl, setImageUrl] = useState();
-    const [loading, setLoading] = useState(false);
-    const staticData = useRef({
-      url: null,
-    });
     const [fileList, setFileList] = useState<any>({});
+    useEffect(() => {
+      if (data) {
+        console.log('detail', data);
+        const d1 = [];
+        const d2 = [];
+        const d3 = [];
+        const files: any = {};
+        for (let i = 0; i < data.length; i += 1) {
+          const d = data[i];
+          if (d.foodType === 0) {
+            const picture = [];
+            if (d.foodPicture) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture}`,
+              });
+            }
+            if (d.foodPicture1) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture1}`,
+              });
+            }
+            if (d.foodPicture2) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture2}`,
+              });
+            }
+            files[`foodType0-${d1.length}`] = picture;
+            d1.push(
+              Object.assign(
+                {},
+                d,
+                { cookWay: BraftEditor.createEditorState(d.cookWay) },
+                { picture: picture },
+              ),
+            );
+          } else if (d.foodType === 1) {
+            const picture = [];
+            if (d.foodPicture) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture}`,
+              });
+            }
+            if (d.foodPicture1) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture1}`,
+              });
+            }
+            if (d.foodPicture2) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture2}`,
+              });
+            }
+            files[`foodType1-${d2.length}`] = picture;
+            d2.push(
+              Object.assign(
+                {},
+                d,
+                { cookWay: BraftEditor.createEditorState(d.cookWay) },
+                { picture: picture },
+              ),
+            );
+          } else {
+            const picture = [];
+            if (d.foodPicture) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture}`,
+              });
+            }
+            if (d.foodPicture1) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture1}`,
+              });
+            }
+            if (d.foodPicture2) {
+              picture.push({
+                uid: i,
+                name: 'image.png',
+                status: 'done',
+                url: `/ocean${d.foodPicture2}`,
+              });
+            }
+            files[`foodType2-${d3.length}`] = picture;
+            d3.push(
+              Object.assign(
+                {},
+                d,
+                { cookWay: BraftEditor.createEditorState(d.cookWay) },
+                { picture: picture },
+              ),
+            );
+          }
+        }
+        const putawayTime = moment(data[0].putawayTime, 'YYYY-MM-DD');
+        const dataSource = {
+          putawayTime,
+          foodType0: d1,
+          foodType1: d2,
+          foodType2: d3,
+        };
+        console.log('dataSource', dataSource);
+        // setDataSource(dataSource);
+        setFileList(files);
+        form.setFieldsValue(dataSource);
+      }
+    }, [data]);
+    console.log('filesfiles', fileList);
 
     const handleOk = () => {
       form.submit();
@@ -53,9 +176,12 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const onFinish = async (values: any) => {
-      console.log(1111111, values);
+      if (!values.foodType0 && !values.foodType1 && !values.foodType2) {
+        message.warning('至少添加一个食谱');
+        return;
+      }
       let data: any = {};
-      data.putawayTime = values.putawayTime.format('YYYY-MM-DD');
+      const date = values.putawayTime.format('YYYY-MM-DD');
       const foods = [];
       if (values.foodType0) {
         let list = values.foodType0;
@@ -65,10 +191,26 @@ const IModal: React.FC<IProps> = memo(
             foodName: list[i].foodName,
             cookWay: list[i].cookWay.toHTML(),
             foodType: 0,
+            putawayTime: date,
           };
-          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
-            const picture = list[i].picture.fileList[j];
-            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
+          if (list[i].id) {
+            food.id = list[i].id;
+          }
+          if (list[i].picture.fileList) {
+            for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+              const picture = list[i].picture.fileList[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.response
+                ? picture.response.data
+                : picture.url.replace('/ocean', '');
+            }
+          } else {
+            for (let j = 0; j < list[i].picture.length; j += 1) {
+              const picture = list[i].picture[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.url.replace(
+                '/ocean',
+                '',
+              );
+            }
           }
           foods.push(food);
         }
@@ -81,12 +223,29 @@ const IModal: React.FC<IProps> = memo(
             foodMaterials: list[i].foodMaterials,
             foodName: list[i].foodName,
             cookWay: list[i].cookWay.toHTML(),
-            foodType: 0,
+            foodType: 1,
+            putawayTime: date,
           };
-          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
-            const picture = list[i].picture.fileList[j];
-            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
+          if (list[i].id) {
+            food.id = list[i].id;
           }
+          if (list[i].picture.fileList) {
+            for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+              const picture = list[i].picture.fileList[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.response
+                ? picture.response.data
+                : picture.url.replace('/ocean', '');
+            }
+          } else {
+            for (let j = 0; j < list[i].picture.length; j += 1) {
+              const picture = list[i].picture[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.url.replace(
+                '/ocean',
+                '',
+              );
+            }
+          }
+
           foods.push(food);
         }
       }
@@ -98,17 +257,33 @@ const IModal: React.FC<IProps> = memo(
             foodMaterials: list[i].foodMaterials,
             foodName: list[i].foodName,
             cookWay: list[i].cookWay.toHTML(),
-            foodType: 0,
+            foodType: 3,
+            putawayTime: date,
           };
-          for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
-            const picture = list[i].picture.fileList[j];
-            food[`foodPicture${i === 0 ? '' : i}`] = picture.response.data;
+          if (list[i].id) {
+            food.id = list[i].id;
+          }
+          if (list[i].picture.fileList) {
+            for (let j = 0; j < list[i].picture.fileList.length; j += 1) {
+              const picture = list[i].picture.fileList[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.response
+                ? picture.response.data
+                : picture.url.replace('/ocean', '');
+            }
+          } else {
+            for (let j = 0; j < list[i].picture.length; j += 1) {
+              const picture = list[i].picture[j];
+              food[`foodPicture${j === 0 ? '' : j}`] = picture.url.replace(
+                '/ocean',
+                '',
+              );
+            }
           }
           foods.push(food);
         }
       }
 
-      data.food = foods;
+      data = foods;
       console.log('data', data);
       if (typeof onSubmit === 'function') {
         onSubmit(data);
@@ -117,12 +292,23 @@ const IModal: React.FC<IProps> = memo(
 
     const uploadButton = (
       <div>
-        {loading ? <LoadingOutlined /> : <PlusOutlined />}
+        <PlusOutlined />
         <div style={{ marginTop: 8 }}>添加图片</div>
       </div>
     );
 
-    console.log('files', fileList);
+    const handleChange = (
+      name: string,
+      key: number,
+      { fileList: list }: any,
+    ) => {
+      console.log('fileList', fileList);
+      const files = Object.assign({}, fileList);
+      files[`${name}-${key}`] = list;
+      setFileList(files);
+    };
+
+    console.log('fileList11111', fileList);
 
     return (
       <Modal
@@ -227,6 +413,10 @@ const IModal: React.FC<IProps> = memo(
                         listType="picture-card"
                         className="avatar-uploader"
                         maxCount={3}
+                        onChange={(file) =>
+                          handleChange('foodType0', key, file)
+                        }
+                        fileList={fileList[`foodType0-${key}`]}
                         accept={'.jpg, .jpeg, .png'}
                       >
                         {uploadButton}
@@ -255,7 +445,6 @@ const IModal: React.FC<IProps> = memo(
                       <BraftEditor
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
-                        value={editorState}
                       />
                     </Form.Item>
                   </div>
@@ -320,6 +509,10 @@ const IModal: React.FC<IProps> = memo(
                         className="avatar-uploader"
                         maxCount={3}
                         accept={'.jpg, .jpeg, .png'}
+                        onChange={(file) =>
+                          handleChange('foodType1', key, file)
+                        }
+                        fileList={fileList[`foodType1-${key}`]}
                       >
                         {uploadButton}
                       </Upload>
@@ -347,7 +540,6 @@ const IModal: React.FC<IProps> = memo(
                       <BraftEditor
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
-                        value={editorState}
                       />
                     </Form.Item>
                   </div>
@@ -412,6 +604,10 @@ const IModal: React.FC<IProps> = memo(
                         className="avatar-uploader"
                         maxCount={3}
                         accept={'.jpg, .jpeg, .png'}
+                        onChange={(file) =>
+                          handleChange('foodType2', key, file)
+                        }
+                        fileList={fileList[`foodType2-${key}`]}
                       >
                         {uploadButton}
                       </Upload>
@@ -439,7 +635,6 @@ const IModal: React.FC<IProps> = memo(
                       <BraftEditor
                         placeholder="请输入烹饪方式"
                         className={styles.editor}
-                        value={editorState}
                       />
                     </Form.Item>
                   </div>

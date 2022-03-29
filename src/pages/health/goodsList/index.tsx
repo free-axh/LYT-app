@@ -4,6 +4,7 @@ import Table from '@/components/table';
 import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import GoodsModal from './addGoodsModal';
+import { getFoodGoodsList } from '@/util/servers';
 
 export default memo(() => {
   const [data, setData] = useState(undefined);
@@ -22,39 +23,49 @@ export default memo(() => {
   const columns = [
     {
       title: '商品编号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'foodTypeId',
+      key: 'foodTypeId',
       align: 'center' as 'center',
     },
     {
       title: '商品名称',
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'foodName',
+      key: 'foodName',
       align: 'center' as 'center',
     },
     {
       title: '分类',
-      dataIndex: 'userName1',
-      key: 'userName1',
+      dataIndex: 'specificationType',
+      key: 'specificationType',
       align: 'center' as 'center',
+      render: (t: number) => {
+        return t === 0 ? '单规格' : '多规格';
+      },
     },
     {
       title: '价格',
-      dataIndex: 'userName2',
-      key: 'userName2',
+      dataIndex: 'price',
+      key: 'price',
       align: 'center' as 'center',
     },
     {
       title: '库存',
-      dataIndex: 'userName3',
-      key: 'userName3',
+      dataIndex: 'inventory',
+      key: 'inventory',
       align: 'center' as 'center',
     },
     {
       title: '状态',
-      dataIndex: 'userName3',
-      key: 'userName3',
+      dataIndex: 'putaway',
+      key: 'putaway',
       align: 'center' as 'center',
+      render: (t: number) => {
+        return t === 0 ? (
+          <Tag color={'green'}>正常</Tag>
+        ) : (
+          <Tag color={'red'}>下架</Tag>
+        );
+      },
     },
     {
       title: '操作',
@@ -87,12 +98,16 @@ export default memo(() => {
   ];
 
   useEffect(() => {
-    setData([
-      {
-        name: '分类1',
-        userName: '1',
-      },
-    ]);
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { foodName: queryValue },
+    });
+    getFoodGoodsList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
   }, [pages]);
 
   function reload() {

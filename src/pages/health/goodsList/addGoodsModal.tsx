@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Modal,
@@ -20,6 +20,7 @@ import 'braft-editor/dist/index.css';
 import styles from './index.less';
 import { uploadFile } from '@/util/servers';
 import EditableTable from '@/components/editableTable';
+import { getGoodsTypeList } from '@/util/servers';
 
 const { Option } = Select;
 interface IProps {
@@ -33,13 +34,21 @@ interface IProps {
 const IModal: React.FC<IProps> = memo(
   ({ visible, title, onClose, onSubmit }) => {
     const [form] = Form.useForm();
-    const [editorState, setEditorState] = useState(
-      BraftEditor.createEditorState(null),
-    );
-    const [imageUrl, setImageUrl] = useState();
-    const [loading, setLoading] = useState(false);
-    const staticData = useRef({
-      url: null,
+    const [typeList, setTypeList] = useState<Array<any>>([]);
+    const [specificationType, setSpecificationType] = useState(0);
+    const [columnsKeys, setColumnsKeys] = useState([
+      'specificationName',
+      'inventory',
+      'weight',
+      'price',
+    ]);
+
+    useEffect(() => {
+      getGoodsTypeList({ pageNo: 1, pageSize: 999 }).then((res) => {
+        if (res.status === 200 && res?.data && res?.data.code === 0) {
+          setTypeList(res.data.data);
+        }
+      });
     });
 
     const handleOk = () => {
@@ -53,99 +62,49 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const onFinish = (values: any) => {
-      const options = Object.assign({}, values, {
-        peoplePhoto: staticData.current.url,
-        peopleInfo: editorState.toHTML(),
-      });
-      if (typeof onSubmit === 'function') {
-        onSubmit(options);
-      }
-    };
-
-    const handleEditorChange = function (editorState: any) {
-      // console.log('2222222', editorState.toHTML());
-      setEditorState(editorState);
-    };
-
-    function getBase64(img: Blob, callback: Function) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => callback(reader.result));
-      reader.readAsDataURL(img);
-    }
-
-    /**
-     * 上传图片改变事件
-     */
-    const handleChange = function (info: any) {
-      if (info.file.status === 'uploading') {
-        setLoading(true);
-        return;
-      }
-      if (info.file.status === 'done') {
-        const fd = new FormData();
-        fd.append('file', info.file.originFileObj);
-        uploadFile(fd).then((res) => {
-          if (res.status === 200 && res.data && res.data.code === 0) {
-            staticData.current.url = res.data.data;
-          }
-        });
-
-        getBase64(info.file.originFileObj, (imageUrl: any) => {
-          setImageUrl(imageUrl);
-          setLoading(false);
-        });
-      }
-    };
-
-    const beforeUpload = function (file: any) {
-      const fd = new FormData();
-      fd.append('file', file);
-      uploadFile(fd).then((res) => {
-        if (res.status === 200 && res.data && res.data.code === 0) {
-          staticData.current.url = res.data.data;
-        }
-      });
-      getBase64(file, (imageUrl: any) => {
-        setImageUrl(imageUrl);
-        setLoading(false);
-      });
-      return false;
+      console.log('value', values);
+      // if (typeof onSubmit === 'function') {
+      //   onSubmit(options);
+      // }
     };
 
     const uploadButton = (
       <div>
-        {loading ? <LoadingOutlined /> : <PlusOutlined />}
+        <PlusOutlined />
         <div style={{ marginTop: 8 }}>添加图片</div>
       </div>
     );
 
     const columns = [
       {
+        title: '规格名称',
+        dataIndex: 'specificationName',
+        width: '23%',
+        editable: true,
+      },
+      {
         title: '库存',
-        dataIndex: 'name',
-        width: '30%',
+        dataIndex: 'inventory',
+        width: '23%',
         editable: true,
       },
       {
         title: '重量（kg）',
-        dataIndex: 'age',
-        width: '30%',
+        dataIndex: 'weight',
+        width: '23%',
         editable: true,
       },
       {
         title: '售价（元）',
-        dataIndex: 'address',
-        width: '30%',
+        dataIndex: 'price',
+        width: '23%',
         editable: true,
       },
-      {
-        title: '操作',
-        dataIndex: 'handle',
-        render: (_, record: { key: React.Key }) => {
-          return <a>删除</a>;
-        },
-      },
     ];
+
+    function onChange(e: any) {
+      setSpecificationType(e.target.value);
+    }
 
     return (
       <Modal
@@ -156,7 +115,7 @@ const IModal: React.FC<IProps> = memo(
         onCancel={handleCancel}
         closable={false}
         centered={true}
-        width={800}
+        width={1200}
         footer={
           <div className={styles.modalFooter}>
             <div>
@@ -192,66 +151,60 @@ const IModal: React.FC<IProps> = memo(
             name="date"
             rules={[{ required: true, message: '请选择商品类别' }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <Select placeholder="请选择商品类别">
+              {typeList.map((res) => (
+                <Option value={res.id}>{res.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="商品名称"
-            name="date"
+            name="foodName"
             rules={[{ required: true, message: '请输入商品名称' }]}
           >
             <Input placeholder="请输入商品名称" />
           </Form.Item>
-          <Form.Item label="商品规格" name="peopleInfo">
-            <Radio.Group>
-              <Radio value="1">单规格</Radio>
-              <Radio value="0">多规格</Radio>
+          <Form.Item label="商品规格" name="specificationType">
+            <Radio.Group onChange={onChange}>
+              <Radio value="0">单规格</Radio>
+              <Radio value="1">多规格</Radio>
             </Radio.Group>
+          </Form.Item>
+          <Form.Item name="typeList" wrapperCol={{ offset: 4, span: 18 }}>
             <EditableTable
+              type={specificationType}
               columns={columns}
-              dataSource={[
-                {
-                  key: '0',
-                  name: 'Edward King 0',
-                  age: '32',
-                  address: 'London, Park Lane no. 0',
-                },
-              ]}
+              columnsKeys={columnsKeys}
             />
           </Form.Item>
           <Form.Item
             label="商品主图"
+            name={'picture'}
             rules={[{ required: true, message: '请上传图片' }]}
             extra="最多添加五张图片"
           >
             <Upload
-              name="avatar"
+              action={'/ocean/file/upload'}
+              name="file"
               style={{ background: '#ffffff' }}
               listType="picture-card"
               className="avatar-uploader"
-              showUploadList={false}
-              // onChange={handleChange}
-              beforeUpload={beforeUpload}
               accept={'.jpg, .jpeg, .png'}
+              maxCount={5}
             >
-              {imageUrl ? (
-                <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
-              ) : (
-                uploadButton
-              )}
+              {uploadButton}
             </Upload>
           </Form.Item>
-          <Form.Item label="商品描述" name="peopleInfo">
+          <Form.Item label="商品描述" name="foodMsg">
             <BraftEditor
               placeholder="请输入商品描述"
               className={styles.editor}
-              value={editorState}
-              onChange={handleEditorChange}
             />
           </Form.Item>
-          <Form.Item label="是否上架" name="peopleInfo">
+          <Form.Item label="是否上架" name="putaway">
             <Radio.Group>
-              <Radio value="1">上架</Radio>
-              <Radio value="0">下架</Radio>
+              <Radio value="0">上架</Radio>
+              <Radio value="1">下架</Radio>
             </Radio.Group>
           </Form.Item>
         </Form>

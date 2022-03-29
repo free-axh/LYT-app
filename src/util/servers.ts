@@ -481,3 +481,63 @@ export const addRecipeList = (options?: object) =>
     url: '/ocean/food/add',
     data: options,
   });
+
+/**
+ * 每日食谱-删除食谱
+ * @param options
+ * @returns
+ */
+export const deleteRecipeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/food/delete',
+    data: options,
+  });
+
+/**
+ * 每日食谱-详情
+ * @param options
+ * @returns
+ */
+export const detailRecipeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/food/getList',
+    data: options,
+  });
+
+/**
+ * 每日食谱-编辑
+ * @param options
+ * @returns
+ */
+export const updateRecipeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/food/update',
+    data: options,
+  });
+
+/**
+ * 商品列表-列表查询
+ * @param options
+ * @returns
+ */
+export const getFoodGoodsList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/getList',
+    data: options,
+  });
+
+/**
+ * 商品列表-商品类别
+ * @param options
+ * @returns
+ */
+export const getGoodsTypeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodType/getList',
+    data: options,
+  });

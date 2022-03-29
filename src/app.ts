@@ -23,10 +23,10 @@ export const layout = ({
         history.push('/neighborhoods/thing');
       }
     },
-    // headerRender: false,
-    // footerRender: false,
-    // menuRender: false,
-    // menuHeaderRender: false,
+    headerRender: false,
+    footerRender: false,
+    menuRender: false,
+    menuHeaderRender: false,
     ...initialState?.settings,
   };
 };

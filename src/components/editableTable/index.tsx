@@ -64,7 +64,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async () => {
     try {
       const values = await form.validateFields();
-
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
@@ -82,16 +81,21 @@ const EditableCell: React.FC<EditableCellProps> = ({
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${title}是必填项`,
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input
+          placeholder={`请输入${title}`}
+          ref={inputRef}
+          onPressEnter={save}
+          onBlur={save}
+        />
       </Form.Item>
     ) : (
       <div
         className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
+        style={{ paddingRight: 24, height: 32 }}
         onClick={toggleEdit}
       >
         {children}
@@ -104,7 +108,9 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 type EditableTableProps = {
   columns: any;
-  dataSource: any;
+  dataSource?: any;
+  type?: string | number;
+  columnsKeys: Array<any>;
 };
 
 interface DataType {
@@ -117,16 +123,37 @@ interface DataType {
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const EditableTable: React.FC<EditableTableProps> = memo(
-  ({ columns, dataSource }) => {
+  ({ columns, dataSource, type, columnsKeys }) => {
     const [data, setData] = useState<Array<any>>([]);
+    const [columnsData, setColumnsData] = useState<Array<any>>([]);
 
     useEffect(() => {
-      if (dataSource) {
-        setData(dataSource);
+      if (columnsKeys) {
+        const data: any = {};
+        for (let i = 0; i < columnsKeys.length; i += 1) {
+          data[columnsKeys[i]] = '';
+        }
+        setData([data]);
       }
-    }, [dataSource]);
+    }, [columnsKeys]);
+
+    function onDelete() {}
+
+    useEffect(() => {
+      if (columns) {
+        columns.push({
+          title: '操作',
+          dataIndex: 'handle',
+          width: '15%',
+          render: (_, record: { key: React.Key }) => {
+            return <a onClick={onDelete}>删除</a>;
+          },
+        });
+      }
+    }, [columns]);
 
     const handleSave = (row: DataType) => {
+      console.log('handleSave', row);
       const newData = [...data];
       const index = newData.findIndex((item) => row.key === item.key);
       const item = newData[index];
@@ -134,6 +161,7 @@ const EditableTable: React.FC<EditableTableProps> = memo(
         ...item,
         ...row,
       });
+      console.log('newData', newData);
       setData(newData);
     };
 
@@ -163,14 +191,16 @@ const EditableTable: React.FC<EditableTableProps> = memo(
 
     return (
       <div>
-        <Button onClick={handleAdd} type="primary" icon={<PlusOutlined />}>
-          新增
-        </Button>
+        {(type === 1 || type === '1') && (
+          <Button onClick={handleAdd} type="primary" icon={<PlusOutlined />}>
+            新增
+          </Button>
+        )}
         <Table
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={dataSource}
+          dataSource={data}
           columns={newColumns as ColumnTypes}
           pagination={false}
         />
