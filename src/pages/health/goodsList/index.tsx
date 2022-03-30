@@ -16,7 +16,7 @@ import Detail from './detail';
 export default memo(() => {
   const [data, setData] = useState(undefined);
   const [detailVisible, setDetailVisible] = useState(false);
-  const [detailData, setDetailData] = useState(null);
+  const [detailData, setDetailData] = useState<any>(null);
   const [detailId, setDetailId] = useState();
   const [modalFlag, setModalFlag] = useState(false);
   const [modalId, setModalId] = useState(null);
@@ -111,10 +111,19 @@ export default memo(() => {
           );
         }
 
+        function updateHandle(r: any) {
+          detailGoodsTypeList({ id: r.id }).then((res) => {
+            if (res.status === 200 && res?.data && res?.data.code === 0) {
+              setModalFlag(true);
+              setDetailData(res.data.data);
+            }
+          });
+        }
+
         return (
           <Space size="middle">
             <a onClick={() => detailHandle(record)}>详情</a>
-            <a>编辑</a>
+            <a onClick={() => updateHandle(record)}>编辑</a>
             <a onClick={() => onUpdatePutaway(record)}>
               {record.putaway === 0 ? '下架' : '上架'}
             </a>
@@ -174,6 +183,7 @@ export default memo(() => {
   }
 
   function addGoods() {
+    setDetailData(null);
     setModalFlag(true);
   }
 
@@ -190,15 +200,28 @@ export default memo(() => {
   }
 
   function onModalSubmit(values: any) {
-    addGoodsTypeList(values).then((res) => {
-      if (res.status === 200 && res?.data && res?.data.code === 0) {
-        message.success('添加商品成功');
-        reload();
-      } else {
-        message.error('添加商品失败');
-      }
-      setModalFlag(false);
-    });
+    if (detailData) {
+      const options = Object.assign({}, values, { id: detailData.id });
+      updatePutaway(options).then((res) => {
+        if (res.status === 200 && res?.data && res?.data.code === 0) {
+          message.success('编辑商品成功');
+          reload();
+        } else {
+          message.error('编辑商品失败');
+        }
+        setModalFlag(false);
+      });
+    } else {
+      addGoodsTypeList(values).then((res) => {
+        if (res.status === 200 && res?.data && res?.data.code === 0) {
+          message.success('添加商品成功');
+          reload();
+        } else {
+          message.error('添加商品失败');
+        }
+        setModalFlag(false);
+      });
+    }
   }
 
   return (
@@ -220,9 +243,10 @@ export default memo(() => {
       {modalFlag && (
         <GoodsModal
           visible={modalFlag}
-          title={'添加商品'}
+          title={detailData ? '编辑商品' : '添加商品'}
           onClose={onModalClose}
           onSubmit={onModalSubmit}
+          data={detailData}
         />
       )}
       <Detail

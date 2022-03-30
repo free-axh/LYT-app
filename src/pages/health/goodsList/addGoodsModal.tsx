@@ -28,11 +28,11 @@ interface IProps {
   title: string;
   onClose?: Function;
   onSubmit?: Function;
-  data?: object;
+  data?: any | null;
 }
 
 const IModal: React.FC<IProps> = memo(
-  ({ visible, title, onClose, onSubmit }) => {
+  ({ visible, title, onClose, onSubmit, data }) => {
     const [form] = Form.useForm();
     const [typeList, setTypeList] = useState<Array<any>>([]);
     const [specificationType, setSpecificationType] = useState(0);
@@ -42,6 +42,10 @@ const IModal: React.FC<IProps> = memo(
       'weight',
       'price',
     ]);
+    const [fileList, setFileList] = useState<Array<any>>([]);
+    const [dataSource, setDataSource] = useState<Array<any> | undefined>(
+      undefined,
+    );
     const staticData = useRef({
       tableData: null,
     });
@@ -53,6 +57,37 @@ const IModal: React.FC<IProps> = memo(
         }
       });
     }, []);
+
+    useEffect(() => {
+      if (data) {
+        console.log('eeeeeeee', data);
+        // 组装图片
+        const pictures = [];
+        for (let i = 1; i <= 5; i += 1) {
+          if (data[`picture${i}`]) {
+            pictures.push({
+              uid: i,
+              name: 'image.png',
+              status: 'done',
+              url: '/ocean' + data[`picture${i}`],
+            });
+          }
+        }
+        setFileList(pictures);
+        staticData.current.tableData = data.specificationList;
+        setDataSource(data.specificationList);
+        const values = {
+          id: data.id,
+          foodTypeId: data.foodTypeId,
+          foodName: data.foodName,
+          specificationType: `${data.specificationType}`,
+          foodMsg: BraftEditor.createEditorState(data.foodMsg),
+          putaway: `${data.putaway}`,
+          picture: pictures,
+        };
+        form.setFieldsValue(values);
+      }
+    }, [data]);
 
     const handleOk = () => {
       form.submit();
@@ -71,13 +106,22 @@ const IModal: React.FC<IProps> = memo(
         foodTypeId: values.foodTypeId,
         foodName: values.foodName,
         specificationType: values.specificationType,
-        foodMsg: values.foodMsg.toHTML(),
+        foodMsg: values.foodMsg ? values.foodMsg.toHTML() : null,
         putaway: values.putaway,
         specificationList: staticData.current.tableData,
       };
-      for (let i = 0; i < values.picture.fileList.length; i += 1) {
-        data[`picture${i + 1}`] = values.picture.fileList[i].response.data;
+      if (values.picture.fileList) {
+        for (let i = 0; i < values.picture.fileList.length; i += 1) {
+          data[`picture${i + 1}`] = values.picture.fileList[i].response
+            ? values.picture.fileList[i].response.data
+            : values.picture.fileList[i].url.replace('/ocean', '');
+        }
+      } else {
+        for (let i = 0; i < values.picture.length; i += 1) {
+          data[`picture${i + 1}`] = values.picture[i].url.replace('/ocean', '');
+        }
       }
+
       console.log('11111111', data);
       if (typeof onSubmit === 'function') {
         onSubmit(data);
@@ -125,6 +169,10 @@ const IModal: React.FC<IProps> = memo(
     function onEditableTableChange(values: any) {
       staticData.current.tableData = values;
     }
+
+    const handleChange = ({ fileList: list }: any) => {
+      setFileList(list);
+    };
 
     return (
       <Modal
@@ -204,6 +252,7 @@ const IModal: React.FC<IProps> = memo(
               columns={columns}
               columnsKeys={columnsKeys}
               onChange={onEditableTableChange}
+              dataSource={dataSource}
             />
           </Form.Item>
           <Form.Item
@@ -219,6 +268,8 @@ const IModal: React.FC<IProps> = memo(
               listType="picture-card"
               className="avatar-uploader"
               accept={'.jpg, .jpeg, .png'}
+              fileList={fileList}
+              onChange={handleChange}
               maxCount={5}
             >
               {uploadButton}

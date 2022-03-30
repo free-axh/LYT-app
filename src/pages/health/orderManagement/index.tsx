@@ -51,16 +51,16 @@ export default memo(() => {
       dataIndex: 'orderStatus',
       key: 'orderStatus',
       align: 'center' as 'center',
-      render: (t) => {
+      render: (t: number) => {
         switch (t) {
           case 0:
-            return '未付款';
+            return <Tag color="orange">未付款</Tag>;
           case 1:
-            return '待确认';
+            return <Tag color="orange">待确认</Tag>;
           case 2:
-            return '已完成';
+            return <Tag color="green">已完成</Tag>;
           case 3:
-            return '已关闭';
+            return <Tag color="red">已关闭</Tag>;
         }
       },
     },
@@ -71,8 +71,14 @@ export default memo(() => {
       width: 400,
       align: 'center' as 'center',
       render: (text: any, record: any) => {
-        function detailHandle(r) {
-          setDetailVisible(true);
+        function detailHandle(r: any) {
+          detailOrderList({ id: r.id }).then((res) => {
+            if (res.status === 200 && res?.data && res?.data.code === 0) {
+              const data = Object.assign({}, r, { detail: res.data.data });
+              setDetailData(data);
+              setDetailVisible(true);
+            }
+          });
         }
 
         return (
@@ -144,7 +150,7 @@ export default memo(() => {
       <Detail
         visible={detailVisible}
         onDetailClose={onDetailClose}
-        data={null}
+        data={detailData}
       />
     </>
   );

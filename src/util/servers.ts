@@ -661,3 +661,15 @@ export const detailOrderList = (options?: object) =>
     url: '/ocean/foodPay/getById',
     data: options,
   });
+
+/**
+ * 订单管理-列表详情
+ * @param options
+ * @returns
+ */
+export const updateOrderList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodPay/update',
+    data: options,
+  });

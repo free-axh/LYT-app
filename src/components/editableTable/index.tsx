@@ -111,6 +111,7 @@ type EditableTableProps = {
   type?: string | number;
   columnsKeys: Array<any>;
   onChange?: Function;
+  dataSource?: Array<any> | undefined;
 };
 
 interface DataType {
@@ -123,29 +124,60 @@ interface DataType {
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const EditableTable: React.FC<EditableTableProps> = memo(
-  ({ columns, type, columnsKeys, onChange }) => {
+  ({ columns, type, columnsKeys, onChange, dataSource }) => {
     const [data, setData] = useState<Array<any>>([]);
     const [columnsData, setColumnsData] = useState<Array<any>>([]);
+    const [count, setCount] = useState<number>(0);
+
+    useEffect(() => {
+      if (type !== 1 && type !== '1') {
+        let newData = [...data];
+        newData.splice(1, newData.length - 1);
+        setData(newData);
+      }
+    }, [type]);
 
     useEffect(() => {
       if (columnsKeys) {
-        const data: any = {};
+        const data: any = { key: count };
         for (let i = 0; i < columnsKeys.length; i += 1) {
           data[columnsKeys[i]] = '';
         }
         setData([data]);
+        setCount(count + 1);
       }
     }, [columnsKeys]);
 
+    useEffect(() => {
+      if (dataSource) {
+        let number = count;
+        for (let i = 0; i < dataSource.length; i += 1) {
+          dataSource[i].key = number;
+          number += 1;
+        }
+        setCount(number);
+        setData(dataSource);
+      }
+    }, [dataSource]);
+
     function onDelete(index: number) {
-      const newData = [...data];
+      console.log('number', data);
+      let newData = [...data];
       newData.splice(index, 1);
-      setData(newData);
+      console.log('sssssssssssss', newData);
+      setData([...newData]);
+      if (typeof onChange === 'function') {
+        onChange(newData);
+      }
     }
+
+    console.log('nnnnnnnnnnnn', data);
 
     useEffect(() => {
       if (columns) {
-        columns.push({
+        const c = [...columns];
+        c.splice(columns.length - 1, 1);
+        c.push({
           title: '操作',
           dataIndex: 'handle',
           width: '15%',
@@ -155,9 +187,9 @@ const EditableTable: React.FC<EditableTableProps> = memo(
             );
           },
         });
-        setColumnsData(columns);
+        setColumnsData(c);
       }
-    }, [columns]);
+    }, [columns, data]);
 
     const handleSave = (row: DataType) => {
       console.log('handleSave', row);
@@ -198,13 +230,14 @@ const EditableTable: React.FC<EditableTableProps> = memo(
     });
 
     function handleAdd() {
-      const d: any = {};
+      const d: any = { key: count };
       const newData = [...data];
       for (let i = 0; i < columnsKeys.length; i += 1) {
         d[columnsKeys[i]] = '';
       }
       newData.push(d);
       setData(newData);
+      setCount(count + 1);
     }
     return (
       <div>
