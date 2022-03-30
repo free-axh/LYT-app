@@ -589,3 +589,75 @@ export const detailGoodsTypeList = (options?: object) =>
     url: '/ocean/foodCommodity/getById',
     data: options,
   });
+
+/**
+ * 分类管理-列表查询
+ * @param options
+ * @returns
+ */
+export const getSortList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodType/getPageList',
+    data: options,
+  });
+
+/**
+ * 分类管理-新增列表
+ * @param options
+ * @returns
+ */
+export const addSortList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodType/add',
+    data: options,
+  });
+
+/**
+ * 分类管理-编辑列表
+ * @param options
+ * @returns
+ */
+export const updateSortList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodType/update',
+    data: options,
+  });
+
+/**
+ * 分类管理-删除列表
+ * @param options
+ * @returns
+ */
+export const deleteSortList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodType/delete',
+    data: options,
+  });
+
+/**
+ * 订单管理-列表查询
+ * @param options
+ * @returns
+ */
+export const getOrderList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodPay/getPageList',
+    data: options,
+  });
+
+/**
+ * 订单管理-列表详情
+ * @param options
+ * @returns
+ */
+export const detailOrderList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodPay/getById',
+    data: options,
+  });

@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Button, Modal, Radio, Input, Form } from 'antd';
 import styles from './index.less';
 
@@ -7,11 +7,18 @@ interface IProps {
   title: string;
   onClose: Function;
   onSubmit: Function;
+  data?: object | null;
 }
 
 const IModal: React.FC<IProps> = memo(
-  ({ visible, title, onClose, onSubmit }) => {
+  ({ visible, title, onClose, onSubmit, data }) => {
     const [form] = Form.useForm();
+
+    useEffect(() => {
+      if (data) {
+        form.setFieldsValue(data);
+      }
+    }, [data]);
 
     const handleOk = () => {
       form.submit();
@@ -21,7 +28,7 @@ const IModal: React.FC<IProps> = memo(
       onClose();
     };
 
-    const onFinish = (values: { checkStatus: string; checkMsg: string }) => {
+    const onFinish = (values: { name: string; indexNumber: number }) => {
       onSubmit(values);
     };
 
@@ -60,14 +67,14 @@ const IModal: React.FC<IProps> = memo(
       >
         <Form form={form} autoComplete="off" onFinish={onFinish}>
           <Form.Item
-            name="checkStatus"
+            name="name"
             label="分类名称"
             rules={[{ required: true, message: '请输入分类名称' }]}
           >
             <Input placeholder="请输入分类名称" />
           </Form.Item>
           <Form.Item
-            name="sort"
+            name="indexNumber"
             label="分类排序"
             rules={[{ required: true, message: '请输入分类排序' }]}
             extra="数值越小，排序越高"

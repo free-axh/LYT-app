@@ -4,6 +4,7 @@ import Table from '@/components/table';
 import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 // import SortModal from './sortModal';
+import { getOrderList, detailOrderList } from '@/util/servers';
 import Detail from './detail';
 
 export default memo(() => {
@@ -23,33 +24,45 @@ export default memo(() => {
   const columns = [
     {
       title: '订单号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'orderNumber',
+      key: 'orderNumber',
       align: 'center' as 'center',
     },
     {
       title: '下单时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      align: 'center' as 'center',
+    },
+    {
+      title: '下单用户',
       dataIndex: 'userName',
       key: 'userName',
       align: 'center' as 'center',
     },
     {
-      title: '下单用户',
-      dataIndex: 'userName1',
-      key: 'userName1',
-      align: 'center' as 'center',
-    },
-    {
       title: '订单金额',
-      dataIndex: 'userName2',
-      key: 'userName2',
+      dataIndex: 'money',
+      key: 'money',
       align: 'center' as 'center',
     },
     {
       title: '状态',
-      dataIndex: 'userName3',
-      key: 'userName3',
+      dataIndex: 'orderStatus',
+      key: 'orderStatus',
       align: 'center' as 'center',
+      render: (t) => {
+        switch (t) {
+          case 0:
+            return '未付款';
+          case 1:
+            return '待确认';
+          case 2:
+            return '已完成';
+          case 3:
+            return '已关闭';
+        }
+      },
     },
     {
       title: '操作',
@@ -72,12 +85,16 @@ export default memo(() => {
   ];
 
   useEffect(() => {
-    setData([
-      {
-        name: '分类1',
-        userName: '1',
-      },
-    ]);
+    setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: { userName: queryValue },
+    });
+    getOrderList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
   }, [pages]);
 
   function reload() {
