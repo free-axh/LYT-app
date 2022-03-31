@@ -591,6 +591,18 @@ export const detailGoodsTypeList = (options?: object) =>
   });
 
 /**
+ * 商品列表-商品编辑
+ * @param options
+ * @returns
+ */
+export const updateGoodsTypeList = (options?: object) =>
+  axios({
+    method: 'post',
+    url: '/ocean/foodCommodity/update',
+    data: options,
+  });
+
+/**
  * 分类管理-列表查询
  * @param options
  * @returns

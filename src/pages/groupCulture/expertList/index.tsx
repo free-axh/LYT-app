@@ -167,7 +167,6 @@ const ExpertList = memo(() => {
    * @param values
    */
   function onModalSubmit(values: any) {
-    // console.log('values', values);
     addExpert(values).then((res) => {
       setModal(false);
       if (res.status === 200 && res.data?.code === 0) {

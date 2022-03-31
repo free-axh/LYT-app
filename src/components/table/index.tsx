@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Table, Input, Button, Space } from 'antd';
+import { Table, Input, Button, Space, Form } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import styles from './index.less';
 
@@ -21,6 +21,7 @@ interface IProps {
   pageSize?: number;
   onPageChange?: Function;
   current?: number;
+  customSearch?: any;
 }
 
 interface IData {
@@ -43,11 +44,13 @@ const SearchTable: React.FC<IProps> = memo(
     pageSize = 10,
     onPageChange,
     current,
+    customSearch,
     ...props
   }) => {
     // const [height, setHeight] = useState(0);
     const [loading, setLoading] = useState(false);
     const staticRef = useRef({ value: '' });
+    const [form] = Form.useForm();
 
     useEffect(() => {
       setLoading(dataSource ? false : true);
@@ -82,23 +85,48 @@ const SearchTable: React.FC<IProps> = memo(
       }
     }
 
+    function onFinish(values: any) {
+      if (onQuery) {
+        onQuery(values);
+      }
+    }
+
     return (
       <div className={styles.content} id="tableContent">
         {search && (
           <div className={styles.header}>
-            <div className={styles.searchInput}>
-              <Input
-                placeholder="请输入关键字查询"
-                onChange={onChange}
-                allowClear
-              />
-            </div>
-            <div>
-              <Space size="middle">
-                <Button onClick={() => onSearch()}>查询</Button>
-                {searchRender}
-              </Space>
-            </div>
+            {customSearch ? (
+              <Form
+                form={form}
+                name="search-table"
+                layout="inline"
+                onFinish={onFinish}
+              >
+                {customSearch}
+                <Form.Item>
+                  <Space size="middle">
+                    <Button onClick={() => form.submit()}>查询</Button>
+                    {searchRender}
+                  </Space>
+                </Form.Item>
+              </Form>
+            ) : (
+              <>
+                <div className={styles.searchInput}>
+                  <Input
+                    placeholder="请输入关键字查询"
+                    onChange={onChange}
+                    allowClear
+                  />
+                </div>
+                <div>
+                  <Space size="middle">
+                    <Button onClick={() => onSearch()}>查询</Button>
+                    {searchRender}
+                  </Space>
+                </div>
+              </>
+            )}
           </div>
         )}
         <Table

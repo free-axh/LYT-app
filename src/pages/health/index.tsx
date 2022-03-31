@@ -55,7 +55,6 @@ const Health = memo(() => {
 
   const renderDom = useCallback(
     (code) => {
-      console.log('code', code);
       switch (code) {
         case 'dailyDiet':
           return <DailyDiet />;
@@ -69,8 +68,6 @@ const Health = memo(() => {
     },
     [key],
   );
-
-  console.log('key', key);
 
   return (
     <div style={{ background: '#f0f2f5' }}>

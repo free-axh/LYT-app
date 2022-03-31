@@ -1,24 +1,9 @@
 import { memo, useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Modal,
-  DatePicker,
-  Input,
-  Form,
-  Upload,
-  Select,
-  Tooltip,
-  Radio,
-} from 'antd';
+import { Button, Modal, Input, Form, Upload, Select, Radio } from 'antd';
 import BraftEditor from 'braft-editor';
-import {
-  LoadingOutlined,
-  PlusOutlined,
-  MinusCircleOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import 'braft-editor/dist/index.css';
 import styles from './index.less';
-import { uploadFile } from '@/util/servers';
 import EditableTable from '@/components/editableTable';
 import { getGoodsTypeList } from '@/util/servers';
 
@@ -60,7 +45,6 @@ const IModal: React.FC<IProps> = memo(
 
     useEffect(() => {
       if (data) {
-        console.log('eeeeeeee', data);
         // 组装图片
         const pictures = [];
         for (let i = 1; i <= 5; i += 1) {
@@ -76,6 +60,7 @@ const IModal: React.FC<IProps> = memo(
         setFileList(pictures);
         staticData.current.tableData = data.specificationList;
         setDataSource(data.specificationList);
+        setSpecificationType(data.specificationType);
         const values = {
           id: data.id,
           foodTypeId: data.foodTypeId,
@@ -100,8 +85,6 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const onFinish = (values: any) => {
-      console.log('value', values);
-
       const data: any = {
         foodTypeId: values.foodTypeId,
         foodName: values.foodName,
@@ -122,7 +105,6 @@ const IModal: React.FC<IProps> = memo(
         }
       }
 
-      console.log('11111111', data);
       if (typeof onSubmit === 'function') {
         onSubmit(data);
       }
@@ -167,7 +149,13 @@ const IModal: React.FC<IProps> = memo(
     }
 
     function onEditableTableChange(values: any) {
-      staticData.current.tableData = values;
+      const newValues = values.map((res: any) => {
+        if (!res.foodCommodityId) {
+          res.foodCommodityId = data.id;
+        }
+        return res;
+      });
+      staticData.current.tableData = newValues;
     }
 
     const handleChange = ({ fileList: list }: any) => {

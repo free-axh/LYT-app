@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { Space, Tag, message, Popconfirm, Button } from 'antd';
+import { Space, message, Popconfirm, Button, Form, DatePicker } from 'antd';
 import Table from '@/components/table';
 import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
@@ -17,8 +17,6 @@ const DailyDiet = memo(() => {
   const [data, setData] = useState(undefined);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState(null);
-  const [modal, setModal] = useState(false);
-  const [modalId, setModalId] = useState(null);
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -105,7 +103,7 @@ const DailyDiet = memo(() => {
   useEffect(() => {
     setData(undefined);
     const options = Object.assign({}, pages, {
-      params: { putawayTime: null },
+      params: { putawayTime: queryValue },
     });
     getRecipeList(options).then((data) => {
       if (data.status === 200) {
@@ -128,8 +126,10 @@ const DailyDiet = memo(() => {
     });
   }
 
-  function onQuery(value: string) {
-    setQueryValue(value === '' ? null : value);
+  function onQuery(value: any) {
+    setQueryValue(
+      value.putawayTime ? value.putawayTime.format('YYYY-MM-DD') : null,
+    );
     setPages({
       pageNo: 1,
       pageSize: 10,
@@ -157,7 +157,6 @@ const DailyDiet = memo(() => {
   function onRecipeModalSubmit(values: any) {
     if (detailData) {
       // 编辑
-      console.log('value', values);
       updateRecipeList(values).then((res) => {
         if (res.status === 200 && res?.data && res?.data.code === 0) {
           message.success('编辑食谱成功');
@@ -194,6 +193,13 @@ const DailyDiet = memo(() => {
         current={current}
         onQuery={onQuery}
         onPageChange={onPageChange}
+        customSearch={
+          <>
+            <Form.Item name="putawayTime">
+              <DatePicker style={{ width: '200px' }} format="YYYY-MM-DD" />
+            </Form.Item>
+          </>
+        }
         searchRender={
           <Button onClick={addRecipe} type="primary" icon={<PlusOutlined />}>
             添加食谱

@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { Drawer, Descriptions, Divider, Button, Tag, Image } from 'antd';
+import { Drawer, Descriptions, Divider, Button, Image } from 'antd';
 import { getDate } from '@/util/function';
 interface IProps {
   visible: boolean;
@@ -100,7 +100,7 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
               {res.foodMaterials}
             </Descriptions.Item>
             <Descriptions.Item label="烹饪方式" span={2}>
-              {res.cookWay}
+              <div dangerouslySetInnerHTML={{ __html: res?.cookWay }}></div>
             </Descriptions.Item>
           </Descriptions>
         </>
@@ -148,7 +148,7 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
               {res.foodMaterials}
             </Descriptions.Item>
             <Descriptions.Item label="烹饪方式" span={2}>
-              {res.cookWay}
+              <div dangerouslySetInnerHTML={{ __html: res?.cookWay }}></div>
             </Descriptions.Item>
           </Descriptions>
         </>
@@ -196,7 +196,7 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
               {res.foodMaterials}
             </Descriptions.Item>
             <Descriptions.Item label="烹饪方式" span={2}>
-              {res.cookWay}
+              <div dangerouslySetInnerHTML={{ __html: res?.cookWay }}></div>
             </Descriptions.Item>
           </Descriptions>
         </>

@@ -1,6 +1,5 @@
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import { Drawer, Descriptions, Divider, Button, Tag, Image, Table } from 'antd';
-import { getDate } from '@/util/function';
 interface IProps {
   visible: boolean;
   data: any | null;
@@ -12,18 +11,22 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
     {
       title: '规格名称',
       dataIndex: 'specificationName',
+      align: 'center' as 'center',
     },
     {
       title: '库存',
       dataIndex: 'inventory',
+      align: 'center' as 'center',
     },
     {
       title: '重量（kg）',
       dataIndex: 'weight',
+      align: 'center' as 'center',
     },
     {
       title: '售价（元）',
       dataIndex: 'price',
+      align: 'center' as 'center',
     },
   ];
 
@@ -66,11 +69,11 @@ const Detail: React.FC<IProps> = memo(({ visible, data, onDetailClose }) => {
       </div>
       <Descriptions>
         <Descriptions.Item label="商品描述" span={2}>
-          {data?.foodMsg}
+          <div dangerouslySetInnerHTML={{ __html: data?.foodMsg }}></div>
         </Descriptions.Item>
       </Descriptions>
       <Divider orientation="left">图片</Divider>
-      <Descriptions>
+      <Descriptions column={3}>
         {data?.picture1 && (
           <Descriptions.Item span={1}>
             <Image

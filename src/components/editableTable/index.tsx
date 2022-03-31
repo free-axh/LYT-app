@@ -161,22 +161,20 @@ const EditableTable: React.FC<EditableTableProps> = memo(
     }, [dataSource]);
 
     function onDelete(index: number) {
-      console.log('number', data);
       let newData = [...data];
       newData.splice(index, 1);
-      console.log('sssssssssssss', newData);
       setData([...newData]);
       if (typeof onChange === 'function') {
         onChange(newData);
       }
     }
 
-    console.log('nnnnnnnnnnnn', data);
-
     useEffect(() => {
       if (columns) {
         const c = [...columns];
-        c.splice(columns.length - 1, 1);
+        if (c.length > 4) {
+          c.splice(columns.length - 1, 1);
+        }
         c.push({
           title: '操作',
           dataIndex: 'handle',
@@ -192,7 +190,6 @@ const EditableTable: React.FC<EditableTableProps> = memo(
     }, [columns, data]);
 
     const handleSave = (row: DataType) => {
-      console.log('handleSave', row);
       const newData = [...data];
       const index = newData.findIndex((item) => row.key === item.key);
       const item = newData[index];
@@ -200,7 +197,6 @@ const EditableTable: React.FC<EditableTableProps> = memo(
         ...item,
         ...row,
       });
-      console.log('newData', newData);
       setData(newData);
       if (typeof onChange === 'function') {
         onChange(newData);

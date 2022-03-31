@@ -47,7 +47,6 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const handleEditorChange = function (editorState: any) {
-      // console.log('2222222', editorState.toHTML());
       setEditorState(editorState);
     };
 
@@ -82,7 +81,6 @@ const IModal: React.FC<IProps> = memo(
     };
 
     const beforeUpload = function (file: any) {
-      console.log('file', file);
       const fd = new FormData();
       fd.append('file', file);
       uploadFile(fd).then((res) => {

@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   Button,
   Modal,
@@ -6,22 +6,15 @@ import {
   Input,
   Form,
   Upload,
-  Select,
   Tooltip,
   message,
 } from 'antd';
 import BraftEditor from 'braft-editor';
-import {
-  LoadingOutlined,
-  PlusOutlined,
-  MinusCircleOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import 'braft-editor/dist/index.css';
 import moment from 'moment';
 import styles from './index.less';
-import { uploadFile } from '@/util/servers';
 
-const { Option } = Select;
 interface IProps {
   visible: boolean;
   title: string;
@@ -36,7 +29,6 @@ const IModal: React.FC<IProps> = memo(
     const [fileList, setFileList] = useState<any>({});
     useEffect(() => {
       if (data) {
-        console.log('detail', data);
         const d1 = [];
         const d2 = [];
         const d3 = [];
@@ -157,13 +149,10 @@ const IModal: React.FC<IProps> = memo(
           foodType1: d2,
           foodType2: d3,
         };
-        console.log('dataSource', dataSource);
-        // setDataSource(dataSource);
         setFileList(files);
         form.setFieldsValue(dataSource);
       }
     }, [data]);
-    console.log('filesfiles', fileList);
 
     const handleOk = () => {
       form.submit();
@@ -284,7 +273,6 @@ const IModal: React.FC<IProps> = memo(
       }
 
       data = foods;
-      console.log('data', data);
       if (typeof onSubmit === 'function') {
         onSubmit(data);
       }
@@ -302,13 +290,10 @@ const IModal: React.FC<IProps> = memo(
       key: number,
       { fileList: list }: any,
     ) => {
-      console.log('fileList', fileList);
       const files = Object.assign({}, fileList);
       files[`${name}-${key}`] = list;
       setFileList(files);
     };
-
-    console.log('fileList11111', fileList);
 
     return (
       <Modal

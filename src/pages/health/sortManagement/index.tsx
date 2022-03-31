@@ -1,7 +1,6 @@
 import { memo, useEffect, useState } from 'react';
-import { Space, Tag, message, Popconfirm, Button } from 'antd';
+import { Space, message, Popconfirm, Button } from 'antd';
 import Table from '@/components/table';
-import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import SortModal from './sortModal';
 import {
@@ -10,14 +9,11 @@ import {
   updateSortList,
   addSortList,
 } from '@/util/servers';
-// import Detail from './detail';
 
 const SortManagement = memo(() => {
   const [data, setData] = useState(undefined);
-  const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
   const [modalFlag, setModalFlag] = useState(false);
-  const [modalId, setModalId] = useState(null);
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
@@ -97,7 +93,7 @@ const SortManagement = memo(() => {
     });
     getSortList(options).then((data) => {
       if (data.status === 200) {
-        setData(data?.data?.data);
+        setData(data?.data?.data?.records);
         setTotal(data?.data?.data?.total);
       }
     });
@@ -129,12 +125,7 @@ const SortManagement = memo(() => {
     setModalFlag(false);
   }
 
-  function onDetailClose() {
-    setDetailVisible(false);
-  }
-
   function onModalSubmit(values: { name: string; indexNumber: number }) {
-    console.log('values', values);
     if (detailData) {
       const options = Object.assign({}, values, { id: detailData.id });
       updateSortList(options).then((res) => {

@@ -1,7 +1,15 @@
 import { memo, useEffect, useState } from 'react';
-import { Space, Tag, message, Popconfirm, Button } from 'antd';
+import {
+  Space,
+  Tag,
+  message,
+  Popconfirm,
+  Button,
+  Form,
+  Input,
+  Select,
+} from 'antd';
 import Table from '@/components/table';
-import { getDate } from '@/util/function';
 import { PlusOutlined } from '@ant-design/icons';
 import GoodsModal from './addGoodsModal';
 import {
@@ -10,6 +18,7 @@ import {
   deleteGoodsTypeList,
   updatePutaway,
   detailGoodsTypeList,
+  updateGoodsTypeList,
 } from '@/util/servers';
 import Detail from './detail';
 
@@ -17,15 +26,16 @@ export default memo(() => {
   const [data, setData] = useState(undefined);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState<any>(null);
-  const [detailId, setDetailId] = useState();
   const [modalFlag, setModalFlag] = useState(false);
-  const [modalId, setModalId] = useState(null);
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
   });
   const [total, setTotal] = useState(0);
-  const [queryValue, setQueryValue] = useState('');
+  const [queryValue, setQueryValue] = useState({
+    foodName: null,
+    putaway: null,
+  });
   const [current, setCurrent] = useState(1);
 
   const columns = [
@@ -92,7 +102,6 @@ export default memo(() => {
         }
 
         function onDelete(id: number) {
-          console.log(1111111112);
           deleteGoodsTypeList({ id }).then((res) => {
             if (res.status === 200 && res?.data && res?.data.code === 0) {
               message.success('删除成功');
@@ -142,7 +151,7 @@ export default memo(() => {
   useEffect(() => {
     setData(undefined);
     const options = Object.assign({}, pages, {
-      params: { foodName: queryValue },
+      params: { foodName: queryValue.foodName, putaway: queryValue.putaway },
     });
     getFoodGoodsList(options).then((data) => {
       if (data.status === 200) {
@@ -155,7 +164,7 @@ export default memo(() => {
   function reload() {
     setData(undefined);
     const options = Object.assign({}, pages, {
-      params: { foodName: queryValue },
+      params: { foodName: queryValue.foodName, putaway: queryValue.putaway },
     });
     getFoodGoodsList(options).then((data) => {
       if (data.status === 200) {
@@ -165,8 +174,11 @@ export default memo(() => {
     });
   }
 
-  function onQuery(value: string) {
-    setQueryValue(value);
+  function onQuery(values: any) {
+    setQueryValue({
+      foodName: values.foodName ? values.foodName : null,
+      putaway: values.putaway || values.putaway === 0 ? values.putaway : null,
+    });
     setPages({
       pageNo: 1,
       pageSize: 10,
@@ -202,7 +214,7 @@ export default memo(() => {
   function onModalSubmit(values: any) {
     if (detailData) {
       const options = Object.assign({}, values, { id: detailData.id });
-      updatePutaway(options).then((res) => {
+      updateGoodsTypeList(options).then((res) => {
         if (res.status === 200 && res?.data && res?.data.code === 0) {
           message.success('编辑商品成功');
           reload();
@@ -234,6 +246,20 @@ export default memo(() => {
         current={current}
         onQuery={onQuery}
         onPageChange={onPageChange}
+        customSearch={
+          <>
+            <Form.Item label="商品名称" name="foodName">
+              <Input placeholder="商品名称" />
+            </Form.Item>
+            <Form.Item label="状态" name="putaway">
+              <Select placeholder="选择状态" style={{ width: '200px' }}>
+                <option>全部</option>
+                <option value={0}>正常</option>
+                <option value={1}>下架</option>
+              </Select>
+            </Form.Item>
+          </>
+        }
         searchRender={
           <Button onClick={addGoods} type="primary" icon={<PlusOutlined />}>
             添加商品

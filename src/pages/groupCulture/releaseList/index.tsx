@@ -36,7 +36,6 @@ const ReleaseList = memo(() => {
   const [contentId, setContentId] = useState<number>();
 
   useEffect(() => {
-    console.log('history', history);
     const {
       location: {
         query: { id, type },

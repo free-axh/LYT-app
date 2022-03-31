@@ -1,24 +1,26 @@
 import { memo, useEffect, useState } from 'react';
-import { Space, Tag, message, Popconfirm, Button } from 'antd';
+import { Space, Tag, Form, Input, Select } from 'antd';
 import Table from '@/components/table';
 import { getDate } from '@/util/function';
-import { PlusOutlined } from '@ant-design/icons';
-// import SortModal from './sortModal';
 import { getOrderList, detailOrderList } from '@/util/servers';
 import Detail from './detail';
+
+const { Option } = Select;
 
 export default memo(() => {
   const [data, setData] = useState(undefined);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailData, setDetailData] = useState(null);
-  const [modalFlag, setModalFlag] = useState(false);
-  const [modalId, setModalId] = useState(null);
   const [pages, setPages] = useState({
     pageNo: 1,
     pageSize: 10,
   });
   const [total, setTotal] = useState(0);
-  const [queryValue, setQueryValue] = useState('');
+  const [queryValue, setQueryValue] = useState<any>({
+    orderStatus: null,
+    orderNumber: null,
+    userName: null,
+  });
   const [current, setCurrent] = useState(1);
 
   const columns = [
@@ -33,6 +35,9 @@ export default memo(() => {
       dataIndex: 'createTime',
       key: 'createTime',
       align: 'center' as 'center',
+      render: (t: number) => {
+        return getDate(t);
+      },
     },
     {
       title: '下单用户',
@@ -54,13 +59,13 @@ export default memo(() => {
       render: (t: number) => {
         switch (t) {
           case 0:
-            return <Tag color="orange">未付款</Tag>;
+            return <Tag color="red">未付款</Tag>;
           case 1:
             return <Tag color="orange">待确认</Tag>;
           case 2:
             return <Tag color="green">已完成</Tag>;
           case 3:
-            return <Tag color="red">已关闭</Tag>;
+            return <Tag color="green">已关闭</Tag>;
         }
       },
     },
@@ -93,7 +98,11 @@ export default memo(() => {
   useEffect(() => {
     setData(undefined);
     const options = Object.assign({}, pages, {
-      params: { userName: queryValue },
+      params: {
+        userName: queryValue.userName,
+        orderStatus: queryValue.orderStatus,
+        orderNumber: queryValue.orderNumber,
+      },
     });
     getOrderList(options).then((data) => {
       if (data.status === 200) {
@@ -105,10 +114,30 @@ export default memo(() => {
 
   function reload() {
     setData(undefined);
+    const options = Object.assign({}, pages, {
+      params: {
+        userName: queryValue.userName,
+        orderStatus: queryValue.orderStatus,
+        orderNumber: queryValue.orderNumber,
+      },
+    });
+    getOrderList(options).then((data) => {
+      if (data.status === 200) {
+        setData(data?.data?.data?.records);
+        setTotal(data?.data?.data?.total);
+      }
+    });
   }
 
-  function onQuery(value: string) {
-    setQueryValue(value);
+  function onQuery(values: any) {
+    setQueryValue({
+      orderStatus:
+        values.orderStatus || values.orderStatus === 0
+          ? values.orderStatus
+          : null,
+      orderNumber: values.orderNumber ? values.orderNumber : null,
+      userName: values.userName ? values.userName : null,
+    });
     setPages({
       pageNo: 1,
       pageSize: 10,
@@ -124,16 +153,14 @@ export default memo(() => {
     setCurrent(page);
   }
 
-  function addSort() {
-    setModalFlag(true);
-  }
-
-  function onRecipeModalClose() {
-    setModalFlag(false);
-  }
-
   function onDetailClose() {
     setDetailVisible(false);
+  }
+
+  function onConfirm(id: number, sendTime: number) {
+    const data: any = Object.assign({}, detailData, { status: 2, sendTime });
+    setDetailData(data);
+    reload();
   }
 
   return (
@@ -146,11 +173,31 @@ export default memo(() => {
         current={current}
         onQuery={onQuery}
         onPageChange={onPageChange}
+        customSearch={
+          <>
+            <Form.Item label="状态" name="orderStatus">
+              <Select placeholder="请选择状态" style={{ width: '200px' }}>
+                <Option>全部</Option>
+                <Option value={0}>未付款</Option>
+                <Option value={1}>待确认</Option>
+                <Option value={2}>已完成</Option>
+                <Option value={3}>已关闭</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item name="orderNumber">
+              <Input placeholder="请输入订单号" allowClear />
+            </Form.Item>
+            <Form.Item name="userName">
+              <Input placeholder="请输入用户名称" allowClear />
+            </Form.Item>
+          </>
+        }
       />
       <Detail
         visible={detailVisible}
         onDetailClose={onDetailClose}
         data={detailData}
+        onConfirm={onConfirm}
       />
     </>
   );

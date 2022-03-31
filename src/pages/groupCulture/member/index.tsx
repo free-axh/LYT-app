@@ -40,7 +40,6 @@ const Member = memo(() => {
   });
 
   useEffect(() => {
-    console.log('history', history);
     const {
       location: {
         query: { id, type },
