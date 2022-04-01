@@ -150,7 +150,7 @@ const IModal: React.FC<IProps> = memo(
 
     function onEditableTableChange(values: any) {
       const newValues = values.map((res: any) => {
-        if (!res.foodCommodityId) {
+        if (data && !res.foodCommodityId) {
           res.foodCommodityId = data.id;
         }
         return res;

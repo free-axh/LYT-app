@@ -54,36 +54,40 @@ const Detail: React.FC<IProps> = memo(
     const getStatus = (code: number) => {
       switch (code) {
         case 0:
-          return <Tag color="green">成功</Tag>;
+          return <Tag color="red">未付款</Tag>;
         case 1:
-          return <Tag color="orange">待发货</Tag>;
-        case 2:
-          return <Tag color="orange">待确认收货</Tag>;
-        case 3:
-          return <Tag color="orange">已送达</Tag>;
-        case 4:
           return <Tag color="green">已完成</Tag>;
+        case 2:
+          return <Tag color="orange">待发货</Tag>;
+        case 3:
+          return <Tag color="green">已发货</Tag>;
+        case 4:
+          return <Tag color="orange">退款中</Tag>;
+        case 5:
+          return <Tag color="green">已关闭</Tag>;
       }
     };
 
     const getMessage = (r: any) => {
-      switch (r.status) {
+      switch (r.orderStatus) {
         case 0:
           return '';
         case 1:
-          return '';
-        case 2:
-          return `发货时间：${getDate(r.sendTime) || '无'}`;
-        case 3:
-          return `到达时间：${getDate(r.arriveTime) || '无'}`;
-        case 4:
           return `收货时间：${getDate(r.consigneeTime) || '无'}`;
+        case 3:
+          return `发货时间：${getDate(r.sendTime) || '无'}`;
+        case 2:
+          return '';
+        case 4:
+          return '';
+        case 5:
+          return '';
       }
     };
 
     const onConfirm = () => {
       const time = new Date().getTime();
-      updateOrderList({ id: data.id, status: 2, sendTime: time }).then(
+      updateOrderList({ id: data.id, orderStatus: 3, sendTime: time }).then(
         (res) => {
           if (res.status === 200 && res?.data && res?.data.code === 0) {
             if (typeof onSubmit === 'function') {
@@ -112,7 +116,7 @@ const Detail: React.FC<IProps> = memo(
           renderItem={(item: any) => (
             <List.Item
               actions={[
-                data?.status === 1 && (
+                (data?.orderStatus === 2 || data?.orderStatus === '2') && (
                   <Button onClick={onConfirm}>确认发货</Button>
                 ),
               ]}
@@ -123,7 +127,7 @@ const Detail: React.FC<IProps> = memo(
                     src={`/ocean${data?.detail?.orderList[0]?.picture1}`}
                   />
                 }
-                title={getStatus(data.status)}
+                title={getStatus(data.orderStatus)}
                 description={getMessage(data)}
               />
             </List.Item>

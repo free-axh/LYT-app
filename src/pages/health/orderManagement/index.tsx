@@ -61,10 +61,14 @@ export default memo(() => {
           case 0:
             return <Tag color="red">未付款</Tag>;
           case 1:
-            return <Tag color="orange">待确认</Tag>;
-          case 2:
             return <Tag color="green">已完成</Tag>;
+          case 2:
+            return <Tag color="orange">待发货</Tag>;
           case 3:
+            return <Tag color="green">已发货</Tag>;
+          case 4:
+            return <Tag color="orange">退款中</Tag>;
+          case 5:
             return <Tag color="green">已关闭</Tag>;
         }
       },
@@ -158,7 +162,10 @@ export default memo(() => {
   }
 
   function onConfirm(id: number, sendTime: number) {
-    const data: any = Object.assign({}, detailData, { status: 2, sendTime });
+    const data: any = Object.assign({}, detailData, {
+      orderStatus: 3,
+      sendTime,
+    });
     setDetailData(data);
     reload();
   }
@@ -179,9 +186,11 @@ export default memo(() => {
               <Select placeholder="请选择状态" style={{ width: '200px' }}>
                 <Option>全部</Option>
                 <Option value={0}>未付款</Option>
-                <Option value={1}>待确认</Option>
-                <Option value={2}>已完成</Option>
-                <Option value={3}>已关闭</Option>
+                <Option value={1}>已完成</Option>
+                <Option value={2}>待发货</Option>
+                <Option value={3}>已发货</Option>
+                <Option value={4}>退款中</Option>
+                <Option value={5}>已关闭</Option>
               </Select>
             </Form.Item>
             <Form.Item name="orderNumber">
