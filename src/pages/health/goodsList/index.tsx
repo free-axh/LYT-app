@@ -53,12 +53,12 @@ export default memo(() => {
     },
     {
       title: '分类',
-      dataIndex: 'specificationType',
-      key: 'specificationType',
+      dataIndex: 'foodTypeName',
+      key: 'foodTypeName',
       align: 'center' as 'center',
-      render: (t: number) => {
-        return t === 0 ? '单规格' : '多规格';
-      },
+      // render: (t: number) => {
+      //   return t === 0 ? '单规格' : '多规格';
+      // },
     },
     {
       title: '价格',
